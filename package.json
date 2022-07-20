@@ -2,16 +2,22 @@
     "name": "@lumeweb/dht-web",
     "type": "module",
     "version": "0.1.0",
+    "main": "dist/index.js",
     "devDependencies": {
         "@types/ws": "^8.5.3",
-        "prettier": "^2.7.1"
+        "esbuild": "^0.14.48",
+        "prettier": "^2.7.1",
+        "tsup": "^6.1.3"
     },
     "dependencies": {
         "@derhuerst/round-robin-scheduler": "^1.0.4",
         "@hyperswarm/dht-relay": "^0.3.0",
+        "buffer": "^6.0.3",
         "libkernel": "^0.1.41",
         "libkmodule": "^0.2.12",
         "libskynet": "^0.0.48",
+        "msgpackr": "^1.6.1",
+        "safe-buffer": "^5.2.1",
         "websocket-pool": "^1.3.1"
     }
 }
