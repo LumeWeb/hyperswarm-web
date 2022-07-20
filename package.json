@@ -3,6 +3,9 @@
     "type": "module",
     "version": "0.1.0",
     "main": "dist/index.js",
+    "scripts": {
+        "build": "tsup"
+    },
     "devDependencies": {
         "@types/ws": "^8.5.3",
         "esbuild": "^0.14.48",
