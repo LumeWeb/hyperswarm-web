@@ -5,7 +5,6 @@ export default class DHT {
     private _relays;
     constructor(opts?: {});
     ready(): Promise<void>;
-    static get IS_WEB(): boolean;
     get relays(): string[];
     addRelay(pubkey: string): Promise<boolean>;
     removeRelay(pubkey: string): boolean;
