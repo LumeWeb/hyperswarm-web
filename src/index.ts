@@ -24,7 +24,7 @@ export default class DHT {
 
     constructor(opts = {}) {
         // @ts-ignore
-        opts.custodial = true;
+        opts.custodial = false;
         this._options = opts;
         this._wsPool = createRoundRobin();
     }

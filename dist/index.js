@@ -18,7 +18,7 @@ export default class DHT {
     _relays = {};
     constructor(opts = {}) {
         // @ts-ignore
-        opts.custodial = true;
+        opts.custodial = false;
         this._options = opts;
         this._wsPool = createRoundRobin();
     }
