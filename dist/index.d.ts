@@ -1,8 +1,10 @@
 import DhtNode from "@hyperswarm/dht-relay";
 export default class DHT {
-    private _wsPool;
     private _options;
     private _relays;
+    private _activeRelays;
+    private _maxConnections;
+    private _inited;
     constructor(opts?: {});
     ready(): Promise<void>;
     get relays(): string[];
@@ -11,7 +13,7 @@ export default class DHT {
     clearRelays(): void;
     private isServerAvailable;
     connect(pubkey: string, options?: {}): Promise<DhtNode>;
-    getAvailableRelay(): Promise<string | boolean>;
+    private fillConnections;
 }
 export declare function hashDataKey(dataKey: string): Uint8Array;
 //# sourceMappingURL=index.d.ts.map

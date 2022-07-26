@@ -3,30 +3,32 @@ import DhtNode from "@hyperswarm/dht-relay";
 // @ts-ignore
 import Stream from "@hyperswarm/dht-relay/ws";
 // @ts-ignore
-import createRoundRobin from "@derhuerst/round-robin-scheduler";
-// @ts-ignore
 import { Buffer } from "buffer";
+// @ts-ignore
 // @ts-ignore
 import { blake2b } from "libskynet";
 // @ts-ignore
 import { registryRead } from "libkmodule";
 import { unpack } from "msgpackr";
+import randomNumber from "random-number-csprng";
 const REGISTRY_DHT_KEY = "lumeweb-dht-node";
 export default class DHT {
-    _wsPool;
     _options;
-    _relays = {};
+    _relays = new Map();
+    _activeRelays = new Map();
+    _maxConnections = 10;
+    _inited = false;
     constructor(opts = {}) {
         // @ts-ignore
         opts.custodial = false;
         this._options = opts;
-        this._wsPool = createRoundRobin();
     }
     ready() {
-        return Promise.resolve();
+        this._inited = true;
+        return this.fillConnections();
     }
     get relays() {
-        return Object.keys(this._relays);
+        return [...this._relays.keys()];
     }
     async addRelay(pubkey) {
         let entry = await registryRead(Uint8Array.from(Buffer.from(pubkey, "hex")), hashDataKey(REGISTRY_DHT_KEY));
@@ -44,22 +46,25 @@ export default class DHT {
         if (isNaN(parseInt(port))) {
             return false;
         }
-        const connection = `wss://${domain}:${port}/`;
-        this._wsPool.add(connection);
-        this._relays[pubkey] = connection;
+        this._relays[pubkey] = `wss://${domain}:${port}/`;
+        if (this._inited) {
+            await this.fillConnections();
+        }
         return true;
     }
     removeRelay(pubkey) {
-        if (!(pubkey in this._relays)) {
+        if (!this._relays.has(pubkey)) {
             return false;
         }
-        this._wsPool.remove(this._relays[pubkey]);
-        delete this._relays[pubkey];
+        if (this._activeRelays.has(pubkey)) {
+            this._activeRelays.get(pubkey).destroy();
+            this._activeRelays.delete(pubkey);
+        }
+        this._relays.delete(pubkey);
         return true;
     }
     clearRelays() {
-        this._wsPool = createRoundRobin();
-        this._relays = {};
+        [...this._relays.keys()].forEach(this.removeRelay);
     }
     async isServerAvailable(connection) {
         return new Promise((resolve) => {
@@ -74,22 +79,26 @@ export default class DHT {
         });
     }
     async connect(pubkey, options = {}) {
-        const relay = await this.getAvailableRelay();
-        if (!relay) {
+        if (this._activeRelays.size === 0) {
             throw new Error("Failed to find an available relay");
         }
-        const node = new DhtNode(new Stream(true, new WebSocket(relay)), this._options);
-        await node.ready();
+        const node = this._activeRelays.get([...this._activeRelays.keys()][await randomNumber(0, this._activeRelays.size - 1)]);
         return node.connect(pubkey, options);
     }
-    async getAvailableRelay() {
-        for (let i = 0; i < this._wsPool.length; i++) {
-            const relay = this._wsPool.get();
-            if (await this.isServerAvailable(relay)) {
-                return relay;
+    async fillConnections() {
+        let available = [...this._relays.keys()].filter(x => [...this._activeRelays.keys()].includes(x));
+        let relayPromises = [];
+        while (this._activeRelays.size <= Math.min(this._maxConnections, available.length + this._activeRelays.size)) {
+            const relayIndex = await randomNumber(0, available.length - 1);
+            const connection = available[relayIndex];
+            if (!this.isServerAvailable(connection)) {
+                continue;
             }
+            const node = new DhtNode(new Stream(true, new WebSocket(this._activeRelays.get(connection))), this._options);
+            this._activeRelays.set(available[relayIndex], node);
+            relayPromises.push(node.ready());
         }
-        return false;
+        return Promise.allSettled(relayPromises);
     }
 }
 export function hashDataKey(dataKey) {
