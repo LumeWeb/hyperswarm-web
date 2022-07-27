@@ -101,7 +101,7 @@ export default class DHT {
             if (!this.isServerAvailable(connection)) {
                 continue;
             }
-            const node = new DhtNode(new Stream(true, new WebSocket(this._activeRelays.get(connection))), this._options);
+            const node = new DhtNode(new Stream(true, new WebSocket(this._relays.get(connection))), this._options);
             this._activeRelays.set(available[relayIndex], node);
             relayPromises.push(node.ready());
         }
