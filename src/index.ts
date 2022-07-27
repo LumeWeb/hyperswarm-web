@@ -141,7 +141,11 @@ export default class DHT {
         break;
       }
 
-      const relayIndex = await randomNumber(0, available.length - 1);
+      let relayIndex = 0;
+
+      if (available.length > 1) {
+        relayIndex = await randomNumber(0, available.length - 1);
+      }
 
       const connection = this._relays.get(available[relayIndex]) as string;
 
