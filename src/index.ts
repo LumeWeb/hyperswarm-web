@@ -67,7 +67,7 @@ export default class DHT {
             return false;
         }
 
-        this._relays[pubkey] = `wss://${domain}:${port}/`;
+        this._relays.set(pubkey, `wss://${domain}:${port}/`);
 
         if (this._inited) {
             await this.fillConnections();
