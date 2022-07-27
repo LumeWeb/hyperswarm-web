@@ -145,7 +145,7 @@ export default class DHT {
       const node = new DhtNode(
         new Stream(
           true,
-          new WebSocket(this._activeRelays.get(connection) as string)
+          new WebSocket(this._relays.get(connection) as string)
         ),
         this._options
       );
