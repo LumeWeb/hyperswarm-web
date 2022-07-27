@@ -130,9 +130,12 @@ export default class DHT {
     if (0 === available.length) {
       return;
     }
+
+    const activeRelays = this._activeRelays.size;
+
     while (
       this._activeRelays.size <=
-      Math.min(this._maxConnections, available.length + this._activeRelays.size)
+      Math.min(this._maxConnections, available.length + activeRelays)
     ) {
       const relayIndex = await randomNumber(0, available.length - 1);
 
