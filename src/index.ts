@@ -113,11 +113,13 @@ export default class DHT {
       throw new Error("Failed to find an available relay");
     }
 
-    const node = this._activeRelays.get(
-      [...this._activeRelays.keys()][
-        await randomNumber(0, this._activeRelays.size - 1)
-      ]
-    );
+    let index = 0;
+
+    if (this._activeRelays.size > 1) {
+      index = await randomNumber(0, this._activeRelays.size - 1);
+    }
+
+    const node = this._activeRelays.get([...this._activeRelays.keys()][index]);
 
     return node.connect(pubkey, options);
   }
