@@ -124,7 +124,7 @@ export default class DHT {
 
   private async fillConnections(): Promise<any> {
     let available = [...this._relays.keys()].filter((x) =>
-      [...this._activeRelays.keys()].includes(x)
+      ![...this._activeRelays.keys()].includes(x)
     );
     let relayPromises = [];
     if (0 > available.length) {
