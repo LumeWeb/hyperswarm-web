@@ -105,7 +105,7 @@ export default class DHT {
                 relayIndex = await randomNumber(0, available.length - 1);
             }
             const connection = this._relays.get(available[relayIndex]);
-            if (!this.isServerAvailable(connection)) {
+            if (!(await this.isServerAvailable(connection))) {
                 continue;
             }
             const node = new DhtNode(new Stream(true, new WebSocket(connection)), this._options);
