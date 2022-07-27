@@ -133,13 +133,14 @@ export default class DHT {
     updateAvailable();
 
     let relayPromises = [];
-    if (0 === available.length) {
-      return;
-    }
     while (
       this._activeRelays.size <=
       Math.min(this._maxConnections, available.length)
     ) {
+      if (0 === available.length) {
+        break;
+      }
+
       const relayIndex = await randomNumber(0, available.length - 1);
 
       const connection = this._relays.get(available[relayIndex]) as string;
@@ -153,6 +154,7 @@ export default class DHT {
         this._options
       );
       this._activeRelays.set(available[relayIndex], node);
+      updateAvailable();
 
       relayPromises.push(node.ready());
     }
