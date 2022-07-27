@@ -97,11 +97,11 @@ export default class DHT {
         while (this._activeRelays.size <=
             Math.min(this._maxConnections, available.length + this._activeRelays.size)) {
             const relayIndex = await randomNumber(0, available.length - 1);
-            const connection = available[relayIndex];
+            const connection = this._relays.get(available[relayIndex]);
             if (!this.isServerAvailable(connection)) {
                 continue;
             }
-            const node = new DhtNode(new Stream(true, new WebSocket(this._relays.get(connection))), this._options);
+            const node = new DhtNode(new Stream(true, new WebSocket(connection)), this._options);
             this._activeRelays.set(available[relayIndex], node);
             relayPromises.push(node.ready());
         }
