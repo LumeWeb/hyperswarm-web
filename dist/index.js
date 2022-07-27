@@ -89,13 +89,17 @@ export default class DHT {
         return node.connect(pubkey, options);
     }
     async fillConnections() {
-        let available = [...this._relays.keys()].filter((x) => ![...this._activeRelays.keys()].includes(x));
+        let available = [];
+        const updateAvailable = () => {
+            available = [...this._relays.keys()].filter((x) => ![...this._activeRelays.keys()].includes(x));
+        };
+        updateAvailable();
         let relayPromises = [];
         if (0 === available.length) {
             return;
         }
         while (this._activeRelays.size <=
-            Math.min(this._maxConnections, available.length + this._activeRelays.size)) {
+            Math.min(this._maxConnections, available.length)) {
             const relayIndex = await randomNumber(0, available.length - 1);
             const connection = this._relays.get(available[relayIndex]);
             if (!this.isServerAvailable(connection)) {
