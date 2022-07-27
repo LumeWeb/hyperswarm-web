@@ -149,7 +149,7 @@ export default class DHT {
 
       const connection = this._relays.get(available[relayIndex]) as string;
 
-      if (!this.isServerAvailable(connection)) {
+      if (!(await this.isServerAvailable(connection))) {
         continue;
       }
 
