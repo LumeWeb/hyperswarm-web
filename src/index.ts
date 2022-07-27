@@ -136,7 +136,7 @@ export default class DHT {
     ) {
       const relayIndex = await randomNumber(0, available.length - 1);
 
-      const connection = this._relays.get(available[relayIndex]);
+      const connection = this._relays.get(available[relayIndex]) as string;
 
       if (!this.isServerAvailable(connection)) {
         continue;
