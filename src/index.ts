@@ -123,8 +123,8 @@ export default class DHT {
   }
 
   private async fillConnections(): Promise<any> {
-    let available = [...this._relays.keys()].filter((x) =>
-      ![...this._activeRelays.keys()].includes(x)
+    let available = [...this._relays.keys()].filter(
+      (x) => ![...this._activeRelays.keys()].includes(x)
     );
     let relayPromises = [];
     if (0 === available.length) {
@@ -136,17 +136,14 @@ export default class DHT {
     ) {
       const relayIndex = await randomNumber(0, available.length - 1);
 
-      const connection = available[relayIndex];
+      const connection = this._relays.get(available[relayIndex]);
 
       if (!this.isServerAvailable(connection)) {
         continue;
       }
 
       const node = new DhtNode(
-        new Stream(
-          true,
-          new WebSocket(this._relays.get(connection) as string)
-        ),
+        new Stream(true, new WebSocket(connection)),
         this._options
       );
       this._activeRelays.set(available[relayIndex], node);
