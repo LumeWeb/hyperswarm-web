@@ -24,6 +24,9 @@ export default class DHT {
         this._options = opts;
     }
     ready() {
+        if (this._inited) {
+            return Promise.resolve();
+        }
         this._inited = true;
         return this.fillConnections();
     }
@@ -46,7 +49,7 @@ export default class DHT {
         if (isNaN(parseInt(port))) {
             return false;
         }
-        this._relays[pubkey] = `wss://${domain}:${port}/`;
+        this._relays.set(pubkey, `wss://${domain}:${port}/`);
         if (this._inited) {
             await this.fillConnections();
         }
@@ -86,9 +89,13 @@ export default class DHT {
         return node.connect(pubkey, options);
     }
     async fillConnections() {
-        let available = [...this._relays.keys()].filter(x => [...this._activeRelays.keys()].includes(x));
+        let available = [...this._relays.keys()].filter((x) => [...this._activeRelays.keys()].includes(x));
         let relayPromises = [];
-        while (this._activeRelays.size <= Math.min(this._maxConnections, available.length + this._activeRelays.size)) {
+        if (0 > available.length) {
+            return;
+        }
+        while (this._activeRelays.size <=
+            Math.min(this._maxConnections, available.length + this._activeRelays.size)) {
             const relayIndex = await randomNumber(0, available.length - 1);
             const connection = available[relayIndex];
             if (!this.isServerAvailable(connection)) {
