@@ -31,6 +31,10 @@ export default class DHT {
     }
 
     ready(): Promise<void> {
+        if (this._inited) {
+            return Promise.resolve();
+        }
+
         this._inited = true;
         return this.fillConnections();
     }
