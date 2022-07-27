@@ -127,7 +127,7 @@ export default class DHT {
       ![...this._activeRelays.keys()].includes(x)
     );
     let relayPromises = [];
-    if (0 > available.length) {
+    if (0 === available.length) {
       return;
     }
     while (
