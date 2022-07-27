@@ -89,9 +89,9 @@ export default class DHT {
         return node.connect(pubkey, options);
     }
     async fillConnections() {
-        let available = [...this._relays.keys()].filter((x) => [...this._activeRelays.keys()].includes(x));
+        let available = [...this._relays.keys()].filter((x) => ![...this._activeRelays.keys()].includes(x));
         let relayPromises = [];
-        if (0 > available.length) {
+        if (0 === available.length) {
             return;
         }
         while (this._activeRelays.size <=
