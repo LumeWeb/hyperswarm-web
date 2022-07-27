@@ -150,6 +150,8 @@ export default class DHT {
       const connection = this._relays.get(available[relayIndex]) as string;
 
       if (!(await this.isServerAvailable(connection))) {
+        available.splice(relayIndex, 1);
+        this.removeRelay(available[relayIndex]);
         continue;
       }
 
