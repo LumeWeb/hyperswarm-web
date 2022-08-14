@@ -3,10 +3,8 @@ import DhtNode from "@hyperswarm/dht-relay";
 // @ts-ignore
 import Stream from "@hyperswarm/dht-relay/ws";
 // @ts-ignore
-import { Buffer } from "buffer";
 // @ts-ignore
-// @ts-ignore
-import { blake2b } from "libskynet";
+import { blake2b, hexToBuf } from "libskynet";
 // @ts-ignore
 import { registryRead } from "libkmodule";
 import { unpack } from "msgpackr";
@@ -34,7 +32,7 @@ export default class DHT {
         return [...this._relays.keys()];
     }
     async addRelay(pubkey) {
-        let entry = await registryRead(Uint8Array.from(Buffer.from(pubkey, "hex")), hashDataKey(REGISTRY_DHT_KEY));
+        let entry = await registryRead(hexToBuf(pubkey).shift(), hashDataKey(REGISTRY_DHT_KEY));
         if (entry[1] || !entry[0]?.exists) {
             return false;
         }
@@ -83,6 +81,9 @@ export default class DHT {
     }
     async connect(pubkey, options = {}) {
         if (this._activeRelays.size === 0) {
+            await this.fillConnections();
+        }
+        if (this._activeRelays.size === 0) {
             throw new Error("Failed to find an available relay");
         }
         let index = 0;
@@ -108,6 +109,7 @@ export default class DHT {
             if (available.length > 1) {
                 relayIndex = await randomNumber(0, available.length - 1);
             }
+            const pubkey = available[relayIndex];
             const connection = this._relays.get(available[relayIndex]);
             if (!(await this.isServerAvailable(connection))) {
                 available.splice(relayIndex, 1);
@@ -118,6 +120,9 @@ export default class DHT {
             this._activeRelays.set(available[relayIndex], node);
             updateAvailable();
             relayPromises.push(node.ready());
+            node._protocol._stream.on("close", () => {
+                this._activeRelays.delete(pubkey);
+            });
         }
         return Promise.allSettled(relayPromises);
     }
@@ -133,7 +138,7 @@ function encodeUtf8String(str) {
     return encoded;
 }
 function stringToUint8ArrayUtf8(str) {
-    return Uint8Array.from(Buffer.from(str, "utf-8"));
+    return new TextEncoder().encode(str);
 }
 function encodeNumber(num) {
     const encoded = new Uint8Array(8);
