@@ -8,6 +8,7 @@ export default class DHT {
     constructor(opts?: {});
     ready(): Promise<void>;
     get relays(): string[];
+    get relayServers(): string[];
     addRelay(pubkey: string): Promise<boolean>;
     removeRelay(pubkey: string): boolean;
     clearRelays(): void;

@@ -31,6 +31,9 @@ export default class DHT {
     get relays() {
         return [...this._relays.keys()];
     }
+    get relayServers() {
+        return [...this._relays.values()];
+    }
     async addRelay(pubkey) {
         let entry = await registryRead(hexToBuf(pubkey).shift(), hashDataKey(REGISTRY_DHT_KEY));
         if (entry[1] || !entry[0]?.exists) {
