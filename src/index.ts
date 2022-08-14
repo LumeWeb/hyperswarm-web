@@ -41,6 +41,10 @@ export default class DHT {
     return [...this._relays.keys()];
   }
 
+  get relayServers(): string[] {
+    return [...this._relays.values()];
+  }
+
   public async addRelay(pubkey: string): Promise<boolean> {
     let entry: errTuple = await registryRead(
       hexToBuf(pubkey).shift() as Uint8Array,
