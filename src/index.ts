@@ -5,10 +5,8 @@ import Stream from "@hyperswarm/dht-relay/ws";
 // @ts-ignore
 import createRoundRobin from "@derhuerst/round-robin-scheduler";
 // @ts-ignore
-import { Buffer } from "buffer";
 // @ts-ignore
-// @ts-ignore
-import { blake2b, errTuple } from "libskynet";
+import { blake2b, errTuple, hexToBuf } from "libskynet";
 // @ts-ignore
 import { registryRead } from "libkmodule";
 
@@ -45,7 +43,7 @@ export default class DHT {
 
   public async addRelay(pubkey: string): Promise<boolean> {
     let entry: errTuple = await registryRead(
-      Uint8Array.from(Buffer.from(pubkey, "hex")),
+      hexToBuf(pubkey).shift() as Uint8Array,
       hashDataKey(REGISTRY_DHT_KEY)
     );
 
@@ -184,7 +182,7 @@ function encodeUtf8String(str: string): Uint8Array {
 }
 
 function stringToUint8ArrayUtf8(str: string): Uint8Array {
-  return Uint8Array.from(Buffer.from(str, "utf-8"));
+  return new TextEncoder().encode(str);
 }
 
 function encodeNumber(num: number): Uint8Array {
