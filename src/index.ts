@@ -108,6 +108,9 @@ export default class DHT {
 
   async connect(pubkey: string, options = {}): Promise<DhtNode> {
     if (this._activeRelays.size === 0) {
+      await this.fillConnections();
+    }
+    if (this._activeRelays.size === 0) {
       throw new Error("Failed to find an available relay");
     }
 
@@ -147,6 +150,7 @@ export default class DHT {
         relayIndex = await randomNumber(0, available.length - 1);
       }
 
+      const pubkey = available[relayIndex];
       const connection = this._relays.get(available[relayIndex]) as string;
 
       if (!(await this.isServerAvailable(connection))) {
@@ -163,6 +167,10 @@ export default class DHT {
       updateAvailable();
 
       relayPromises.push(node.ready());
+
+      node._protocol._stream.on("close", () => {
+        this._activeRelays.delete(pubkey);
+      });
     }
 
     return Promise.allSettled(relayPromises);
