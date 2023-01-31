@@ -6,6 +6,7 @@ export default class HyperswarmWeb extends EventEmitter {
     private _relays;
     private _activeRelay;
     private _discovery;
+    private _queuedEmActions;
     constructor(opts?: any);
     ready(): Promise<void>;
     private ensureConnection;
@@ -21,5 +22,7 @@ export default class HyperswarmWeb extends EventEmitter {
     removeListener(eventName: string | symbol, listener: (...args: any[]) => void): this;
     emit(eventName: string | symbol, ...args: any[]): boolean;
     once(eventName: string | symbol, listener: (...args: any[]) => void): this;
+    private _processOrQueueAction;
+    private _processQueuedActions;
 }
 //# sourceMappingURL=index.d.ts.map

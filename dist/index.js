@@ -11,6 +11,7 @@ export default class HyperswarmWeb extends EventEmitter {
     _relays = new Set();
     _activeRelay;
     _discovery;
+    _queuedEmActions = [];
     constructor(opts = {}) {
         super();
         opts.custodial = false;
@@ -52,6 +53,7 @@ export default class HyperswarmWeb extends EventEmitter {
         if (!this._activeRelay) {
             throw new Error("Failed to find an available relay");
         }
+        this._processQueuedActions();
         await this._activeRelay.dht.ready();
     }
     async isServerAvailable(connection) {
@@ -89,21 +91,34 @@ export default class HyperswarmWeb extends EventEmitter {
         this._relays.clear();
     }
     on(eventName, listener) {
-        return this._activeRelay?.on(eventName, listener);
+        return this._processOrQueueAction("on", arguments);
     }
     addListener(eventName, listener) {
         return this.on(eventName, listener);
     }
     off(eventName, listener) {
-        return this._activeRelay?.off(eventName, listener);
+        return this._processOrQueueAction("off", arguments);
     }
     removeListener(eventName, listener) {
-        return this.on(eventName, listener);
+        return this.off(eventName, listener);
     }
     emit(eventName, ...args) {
-        return this._activeRelay?.emit(eventName, ...args);
+        return this._processOrQueueAction("emit", arguments);
     }
     once(eventName, listener) {
-        return this._activeRelay?.once(eventName, listener);
+        return this._processOrQueueAction("once", arguments);
+    }
+    _processOrQueueAction(method, ...args) {
+        if (this._activeRelay) {
+            return this._activeRelay[method](...args);
+        }
+        this._queuedEmActions.push([method, args]);
+        return this;
+    }
+    _processQueuedActions() {
+        for (const action of this._queuedEmActions) {
+            this._activeRelay[action[0]](...action[1]);
+        }
+        this._queuedEmActions = [];
     }
 }
