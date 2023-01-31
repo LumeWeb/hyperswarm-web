@@ -41,7 +41,8 @@ export default class HyperswarmWeb extends EventEmitter {
     const relays = this.relays;
 
     do {
-      const index = await randomNumber(0, relays.length - 1);
+      const index =
+        relays.length > 1 ? await randomNumber(0, relays.length - 1) : 0;
       const relay = relays[index];
 
       let ret;
