@@ -12,7 +12,7 @@ import { load } from "@lumeweb/libkernel-universal";
 // @ts-ignore
 import Hyperswarm from "hyperswarm";
 import randomNumber from "random-number-csprng";
-import EventEmitter from "node:events";
+import EventEmitter from "eventemitter2";
 
 export default class HyperswarmWeb extends EventEmitter {
   private _options: any;

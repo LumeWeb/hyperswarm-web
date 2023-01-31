@@ -18,6 +18,7 @@
         "@hyperswarm/dht-relay": "^0.3.0",
         "@lumeweb/kernel-peer-discovery-client": "git+https://git.lumeweb.com/LumeWeb/kernel-peer-discovery-client.git",
         "@lumeweb/libkernel-universal": "git+https://git.lumeweb.com/LumeWeb/libkernel-universal.git",
+        "eventemitter2": "^6.4.9",
         "hyperswarm": "^4.3.7"
     }
 }
