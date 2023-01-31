@@ -19,6 +19,7 @@ export default class HyperswarmWeb extends EventEmitter {
   private _relays: Set<string> = new Set();
   private _activeRelay: Hyperswarm;
   private _discovery: PeerDiscoveryClient;
+  private _queuedEmActions: [string, any][] = [];
   constructor(opts: any = {}) {
     super();
     opts.custodial = false;
@@ -75,6 +76,7 @@ export default class HyperswarmWeb extends EventEmitter {
       throw new Error("Failed to find an available relay");
     }
 
+    this._processQueuedActions();
     await this._activeRelay.dht.ready();
   }
 
@@ -124,7 +126,7 @@ export default class HyperswarmWeb extends EventEmitter {
     eventName: string | symbol,
     listener: (...args: any[]) => void
   ): Hyperswarm {
-    return this._activeRelay?.on(eventName, listener);
+    return this._processOrQueueAction("on", arguments);
   }
   addListener(
     eventName: string | symbol,
@@ -137,20 +139,37 @@ export default class HyperswarmWeb extends EventEmitter {
     eventName: string | symbol,
     listener: (...args: any[]) => void
   ): Hyperswarm {
-    return this._activeRelay?.off(eventName, listener);
+    return this._processOrQueueAction("off", arguments);
   }
 
   removeListener(
     eventName: string | symbol,
     listener: (...args: any[]) => void
   ): this {
-    return this.on(eventName, listener);
+    return this.off(eventName, listener);
   }
   emit(eventName: string | symbol, ...args: any[]): boolean {
-    return this._activeRelay?.emit(eventName, ...args);
+    return this._processOrQueueAction("emit", arguments);
   }
 
   once(eventName: string | symbol, listener: (...args: any[]) => void): this {
-    return this._activeRelay?.once(eventName, listener);
+    return this._processOrQueueAction("once", arguments);
+  }
+
+  private _processOrQueueAction(method: string, ...args: any[]) {
+    if (this._activeRelay) {
+      return this._activeRelay[method](...args);
+    }
+
+    this._queuedEmActions.push([method, args]);
+    return this;
+  }
+
+  private _processQueuedActions(): void {
+    for (const action of this._queuedEmActions) {
+      this._activeRelay[action[0]](...action[1]);
+    }
+
+    this._queuedEmActions = [];
   }
 }
