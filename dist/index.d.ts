@@ -1,7 +1,6 @@
-/// <reference types="node" />
 import DhtNode from "@hyperswarm/dht-relay";
 import Hyperswarm from "hyperswarm";
-import EventEmitter from "node:events";
+import EventEmitter from "eventemitter2";
 export default class HyperswarmWeb extends EventEmitter {
     private _options;
     private _relays;

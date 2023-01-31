@@ -5,7 +5,7 @@ import Stream from "@hyperswarm/dht-relay/ws";
 import { createClient } from "@lumeweb/kernel-peer-discovery-client";
 import { load } from "@lumeweb/libkernel-universal";
 import randomNumber from "random-number-csprng";
-import EventEmitter from "node:events";
+import EventEmitter from "eventemitter2";
 export default class HyperswarmWeb extends EventEmitter {
     _options;
     _relays = new Set();
