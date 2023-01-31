@@ -16,7 +16,7 @@ specifiers:
 dependencies:
   '@hyperswarm/dht-relay': 0.3.0
   '@lumeweb/kernel-peer-discovery-client': git.lumeweb.com/LumeWeb/kernel-peer-discovery-client/48f9e8deb646d5af1f8430ad4fa1a7aed2c39379
-  '@lumeweb/libkernel-universal': git.lumeweb.com/LumeWeb/libkernel-universal/ae9c6eeb60cd5e350012c3e393ff8b846326e468
+  '@lumeweb/libkernel-universal': git.lumeweb.com/LumeWeb/libkernel-universal/c5d761b3ae2700a68a142103f43b06f7d5c2de0a
   eventemitter2: 6.4.9
   hyperswarm: 4.3.7
 
@@ -755,7 +755,7 @@ packages:
     version: 0.1.0
     dependencies:
       '@hyperswarm/dht-relay': 0.3.0
-      '@lumeweb/libkernel-universal': git.lumeweb.com/LumeWeb/libkernel-universal/ae9c6eeb60cd5e350012c3e393ff8b846326e468
+      '@lumeweb/libkernel-universal': git.lumeweb.com/LumeWeb/libkernel-universal/c5d761b3ae2700a68a142103f43b06f7d5c2de0a
       '@lumeweb/peer-discovery': git.lumeweb.com/LumeWeb/peer-discovery/d2bd926275103d60fdd3c7c432eae5c278f49261
       '@siaweb/libweb': git.lumeweb.com/LumeWeb/libsiaweb/5e6cdba3e7d9a4b94e21ddcd5f2b5138fb440ee8
       hyperswarm: 4.3.7
@@ -763,8 +763,8 @@ packages:
       libkmodule: 0.2.53
     dev: false
 
-  git.lumeweb.com/LumeWeb/libkernel-universal/ae9c6eeb60cd5e350012c3e393ff8b846326e468:
-    resolution: {commit: ae9c6eeb60cd5e350012c3e393ff8b846326e468, repo: https://git.lumeweb.com/LumeWeb/libkernel-universal.git, type: git}
+  git.lumeweb.com/LumeWeb/libkernel-universal/c5d761b3ae2700a68a142103f43b06f7d5c2de0a:
+    resolution: {commit: c5d761b3ae2700a68a142103f43b06f7d5c2de0a, repo: https://git.lumeweb.com/LumeWeb/libkernel-universal.git, type: git}
     name: '@lumeweb/libkernel-universal'
     version: 0.1.0
     dependencies:
