@@ -2,73 +2,57 @@
 import DhtNode from "@hyperswarm/dht-relay";
 // @ts-ignore
 import Stream from "@hyperswarm/dht-relay/ws";
-// @ts-ignore
-// @ts-ignore
-import { blake2b, hexToBuf } from "libskynet";
-// @ts-ignore
-import { registryRead } from "libkmodule";
-import { unpack } from "msgpackr";
+import { createClient } from "@lumeweb/kernel-peer-discovery-client";
+import { load } from "@lumeweb/libkernel-universal";
 import randomNumber from "random-number-csprng";
-const REGISTRY_DHT_KEY = "lumeweb-dht-node";
-export default class DHT {
+import EventEmitter from "node:events";
+export default class HyperswarmWeb extends EventEmitter {
     _options;
-    _relays = new Map();
-    _activeRelays = new Map();
-    _maxConnections = 10;
-    _inited = false;
+    _relays = new Set();
+    _activeRelay;
+    _discovery;
     constructor(opts = {}) {
-        // @ts-ignore
+        super();
         opts.custodial = false;
         this._options = opts;
+        this._discovery = createClient();
     }
     ready() {
-        if (this._inited) {
-            return Promise.resolve();
-        }
-        this._inited = true;
-        return this.fillConnections();
+        return this.ensureConnection();
     }
-    get relays() {
-        return [...this._relays.keys()];
-    }
-    get relayServers() {
-        return [...this._relays.values()];
-    }
-    async addRelay(pubkey) {
-        let entry = await registryRead(hexToBuf(pubkey).shift(), hashDataKey(REGISTRY_DHT_KEY));
-        if (entry[1] || !entry[0]?.exists) {
-            return false;
+    async ensureConnection() {
+        const logErr = (await load()).logErr;
+        if (this._activeRelay) {
+            return;
         }
-        let host;
-        try {
-            host = unpack(entry[0].entryData);
+        const relays = this.relays;
+        do {
+            const index = await randomNumber(0, relays.length - 1);
+            const relay = relays[index];
+            let ret;
+            try {
+                ret = await this._discovery.discover(relay);
+            }
+            catch (e) {
+                logErr(e);
+                relays.splice(index, 1);
+                continue;
+            }
+            ret = ret;
+            const connection = `wss://${ret.host}:${ret.port}`;
+            if (!(await this.isServerAvailable(connection))) {
+                relays.splice(index, 1);
+                continue;
+            }
+            this._activeRelay = new DhtNode(new Stream(true, new WebSocket(connection)), this._options);
+            this._activeRelay.on("close", () => {
+                this._activeRelay = undefined;
+            });
+        } while (relays.length > 0);
+        if (!this._activeRelay) {
+            throw new Error("Failed to find an available relay");
         }
-        catch (e) {
-            return false;
-        }
-        const [domain, port] = host.split(":");
-        if (isNaN(parseInt(port))) {
-            return false;
-        }
-        this._relays.set(pubkey, `wss://${domain}:${port}/`);
-        if (this._inited) {
-            await this.fillConnections();
-        }
-        return true;
-    }
-    removeRelay(pubkey) {
-        if (!this._relays.has(pubkey)) {
-            return false;
-        }
-        if (this._activeRelays.has(pubkey)) {
-            this._activeRelays.get(pubkey).destroy();
-            this._activeRelays.delete(pubkey);
-        }
-        this._relays.delete(pubkey);
-        return true;
-    }
-    clearRelays() {
-        [...this._relays.keys()].forEach(this.removeRelay);
+        await this._activeRelay.dht.ready();
     }
     async isServerAvailable(connection) {
         return new Promise((resolve) => {
@@ -83,71 +67,43 @@ export default class DHT {
         });
     }
     async connect(pubkey, options = {}) {
-        if (this._activeRelays.size === 0) {
-            await this.fillConnections();
+        if (!this._activeRelay) {
+            await this.ensureConnection();
         }
-        if (this._activeRelays.size === 0) {
-            throw new Error("Failed to find an available relay");
-        }
-        let index = 0;
-        if (this._activeRelays.size > 1) {
-            index = await randomNumber(0, this._activeRelays.size - 1);
-        }
-        const node = this._activeRelays.get([...this._activeRelays.keys()][index]);
-        return node.connect(pubkey, options);
+        return this._activeRelay.connect(pubkey, options);
     }
-    async fillConnections() {
-        let available = [];
-        const updateAvailable = () => {
-            available = [...this._relays.keys()].filter((x) => ![...this._activeRelays.keys()].includes(x));
-        };
-        updateAvailable();
-        let relayPromises = [];
-        while (this._activeRelays.size <=
-            Math.min(this._maxConnections, available.length)) {
-            if (0 === available.length) {
-                break;
-            }
-            let relayIndex = 0;
-            if (available.length > 1) {
-                relayIndex = await randomNumber(0, available.length - 1);
-            }
-            const pubkey = available[relayIndex];
-            const connection = this._relays.get(available[relayIndex]);
-            if (!(await this.isServerAvailable(connection))) {
-                available.splice(relayIndex, 1);
-                this.removeRelay(available[relayIndex]);
-                continue;
-            }
-            const node = new DhtNode(new Stream(true, new WebSocket(connection)), this._options);
-            this._activeRelays.set(available[relayIndex], node);
-            updateAvailable();
-            relayPromises.push(node.ready());
-            node._protocol._stream.on("close", () => {
-                this._activeRelays.delete(pubkey);
-            });
+    get relays() {
+        return [...this._relays.values()];
+    }
+    async addRelay(pubkey) {
+        this._relays.add(pubkey);
+    }
+    removeRelay(pubkey) {
+        if (!this._relays.has(pubkey)) {
+            return false;
         }
-        return Promise.allSettled(relayPromises);
+        this._relays.delete(pubkey);
+        return true;
     }
-}
-export function hashDataKey(dataKey) {
-    return blake2b(encodeUtf8String(dataKey));
-}
-function encodeUtf8String(str) {
-    const byteArray = stringToUint8ArrayUtf8(str);
-    const encoded = new Uint8Array(8 + byteArray.length);
-    encoded.set(encodeNumber(byteArray.length));
-    encoded.set(byteArray, 8);
-    return encoded;
-}
-function stringToUint8ArrayUtf8(str) {
-    return new TextEncoder().encode(str);
-}
-function encodeNumber(num) {
-    const encoded = new Uint8Array(8);
-    for (let index = 0; index < encoded.length; index++) {
-        encoded[index] = num & 0xff;
-        num = num >> 8;
+    clearRelays() {
+        this._relays.clear();
     }
-    return encoded;
+    on(eventName, listener) {
+        return this._activeRelay?.on(eventName, listener);
+    }
+    addListener(eventName, listener) {
+        return this.on(eventName, listener);
+    }
+    off(eventName, listener) {
+        return this._activeRelay?.off(eventName, listener);
+    }
+    removeListener(eventName, listener) {
+        return this.on(eventName, listener);
+    }
+    emit(eventName, ...args) {
+        return this._activeRelay?.emit(eventName, ...args);
+    }
+    once(eventName, listener) {
+        return this._activeRelay?.once(eventName, listener);
+    }
 }

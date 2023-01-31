@@ -1,20 +1,26 @@
+/// <reference types="node" />
 import DhtNode from "@hyperswarm/dht-relay";
-export default class DHT {
+import Hyperswarm from "hyperswarm";
+import EventEmitter from "node:events";
+export default class HyperswarmWeb extends EventEmitter {
     private _options;
     private _relays;
-    private _activeRelays;
-    private _maxConnections;
-    private _inited;
-    constructor(opts?: {});
+    private _activeRelay;
+    private _discovery;
+    constructor(opts?: any);
     ready(): Promise<void>;
-    get relays(): string[];
-    get relayServers(): string[];
-    addRelay(pubkey: string): Promise<boolean>;
-    removeRelay(pubkey: string): boolean;
-    clearRelays(): void;
+    private ensureConnection;
     private isServerAvailable;
     connect(pubkey: string, options?: {}): Promise<DhtNode>;
-    private fillConnections;
+    get relays(): string[];
+    addRelay(pubkey: string): Promise<void>;
+    removeRelay(pubkey: string): boolean;
+    clearRelays(): void;
+    on(eventName: string | symbol, listener: (...args: any[]) => void): Hyperswarm;
+    addListener(eventName: string | symbol, listener: (...args: any[]) => void): this;
+    off(eventName: string | symbol, listener: (...args: any[]) => void): Hyperswarm;
+    removeListener(eventName: string | symbol, listener: (...args: any[]) => void): this;
+    emit(eventName: string | symbol, ...args: any[]): boolean;
+    once(eventName: string | symbol, listener: (...args: any[]) => void): this;
 }
-export declare function hashDataKey(dataKey: string): Uint8Array;
 //# sourceMappingURL=index.d.ts.map
