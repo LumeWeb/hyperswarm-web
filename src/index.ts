@@ -54,6 +54,11 @@ export default class HyperswarmWeb extends EventEmitter {
         continue;
       }
 
+      if (!ret) {
+        relays.splice(index, 1);
+        continue;
+      }
+
       ret = ret as Peer;
 
       const connection = `wss://${ret.host}:${ret.port}`;
