@@ -15,7 +15,7 @@ specifiers:
 
 dependencies:
   '@hyperswarm/dht-relay': 0.3.0
-  '@lumeweb/kernel-peer-discovery-client': git.lumeweb.com/LumeWeb/kernel-peer-discovery-client/abbaf55f5f38d1638c9a90fc225a22e53c04cf64
+  '@lumeweb/kernel-peer-discovery-client': git.lumeweb.com/LumeWeb/kernel-peer-discovery-client/e5ed06e1df9f60bee10980ff8b337fe2990f4b52
   '@lumeweb/libkernel-universal': git.lumeweb.com/LumeWeb/libkernel-universal/fb377db59fd24761d140eb98f49166ea1cc7cc39
   eventemitter2: 6.4.9
   hyperswarm: 4.3.7
@@ -749,8 +749,8 @@ packages:
     resolution: {integrity: sha512-FIr/DEeoHfj7ftfylnoFt3rAIRoWXpx2AoDfrT2qD2wtp7Dp+COajvs/Icb7uHqRW9m60f5iXZwdsJJO3kvb7w==}
     dev: false
 
-  git.lumeweb.com/LumeWeb/kernel-peer-discovery-client/abbaf55f5f38d1638c9a90fc225a22e53c04cf64:
-    resolution: {commit: abbaf55f5f38d1638c9a90fc225a22e53c04cf64, repo: https://git.lumeweb.com/LumeWeb/kernel-peer-discovery-client.git, type: git}
+  git.lumeweb.com/LumeWeb/kernel-peer-discovery-client/e5ed06e1df9f60bee10980ff8b337fe2990f4b52:
+    resolution: {commit: e5ed06e1df9f60bee10980ff8b337fe2990f4b52, repo: https://git.lumeweb.com/LumeWeb/kernel-peer-discovery-client.git, type: git}
     name: '@lumeweb/kernel-peer-discovery-client'
     version: 0.1.0
     dependencies:
