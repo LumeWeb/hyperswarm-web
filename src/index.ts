@@ -132,7 +132,7 @@ export default class HyperswarmWeb extends EventEmitter {
     eventName: string | symbol,
     listener: (...args: any[]) => void
   ): Hyperswarm {
-    return this._processOrQueueAction("on", arguments);
+    return this._processOrQueueAction("on", ...arguments);
   }
   addListener(
     eventName: string | symbol,
@@ -145,7 +145,7 @@ export default class HyperswarmWeb extends EventEmitter {
     eventName: string | symbol,
     listener: (...args: any[]) => void
   ): Hyperswarm {
-    return this._processOrQueueAction("off", arguments);
+    return this._processOrQueueAction("off", ...arguments);
   }
 
   removeListener(
@@ -155,11 +155,11 @@ export default class HyperswarmWeb extends EventEmitter {
     return this.off(eventName, listener);
   }
   emit(eventName: string | symbol, ...args: any[]): boolean {
-    return this._processOrQueueAction("emit", arguments);
+    return this._processOrQueueAction("emit", ...arguments);
   }
 
   once(eventName: string | symbol, listener: (...args: any[]) => void): this {
-    return this._processOrQueueAction("once", arguments);
+    return this._processOrQueueAction("once", ...arguments);
   }
 
   private _processOrQueueAction(method: string, ...args: any[]) {
