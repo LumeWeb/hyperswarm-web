@@ -142,4 +142,28 @@ export default class HyperswarmWeb extends EventEmitter {
         }
         this._queuedEmActions = [];
     }
+    join(topic, opts = {}) {
+        return this._activeRelay?.join(topic, opts);
+    }
+    joinPeer(publicKey) {
+        return this._activeRelay?.joinPeer(publicKey);
+    }
+    leave(topic) {
+        return this._activeRelay?.leave(topic);
+    }
+    leavePeer(publicKey) {
+        return this._activeRelay?.leavePeer(publicKey);
+    }
+    status(publicKey) {
+        return this._activeRelay?.status(publicKey);
+    }
+    topics() {
+        return this._activeRelay?.topics();
+    }
+    async flush() {
+        return this._activeRelay?.flush();
+    }
+    async clear() {
+        return this._activeRelay?.clear();
+    }
 }
