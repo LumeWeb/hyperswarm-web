@@ -9,6 +9,7 @@ export default class HyperswarmWeb extends EventEmitter {
     private _queuedEmActions;
     private _connectionMutex;
     constructor(opts?: any);
+    get activeRelay(): Hyperswarm;
     init(): Promise<void>;
     private ensureConnection;
     private isServerAvailable;

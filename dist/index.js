@@ -22,6 +22,9 @@ export default class HyperswarmWeb extends EventEmitter {
         this._options = opts;
         this._discovery = createClient();
     }
+    get activeRelay() {
+        return this._activeRelay;
+    }
     init() {
         return this.ensureConnection();
     }
