@@ -16,8 +16,8 @@ specifiers:
 
 dependencies:
   '@hyperswarm/dht-relay': 0.3.0
-  '@lumeweb/kernel-peer-discovery-client': git.lumeweb.com/LumeWeb/kernel-peer-discovery-client/ec966974f6898dc3dc8d484df786bfe940421131
-  '@lumeweb/libkernel-universal': git.lumeweb.com/LumeWeb/libkernel-universal/0bc5807c6afdcc95ed960a6ba2c304388fa67f28
+  '@lumeweb/kernel-peer-discovery-client': git.lumeweb.com/LumeWeb/kernel-peer-discovery-client/63bd27fed253f3fd7e94a357d8ce88809328f34c
+  '@lumeweb/libkernel-universal': git.lumeweb.com/LumeWeb/libkernel-universal/abb26748abb3ca76d4489bf87a1c10a9901367ab
   async-mutex: 0.4.0
   eventemitter2: 6.4.9
   hyperswarm: 4.3.7
@@ -761,13 +761,13 @@ packages:
     resolution: {integrity: sha512-FIr/DEeoHfj7ftfylnoFt3rAIRoWXpx2AoDfrT2qD2wtp7Dp+COajvs/Icb7uHqRW9m60f5iXZwdsJJO3kvb7w==}
     dev: false
 
-  git.lumeweb.com/LumeWeb/kernel-peer-discovery-client/ec966974f6898dc3dc8d484df786bfe940421131:
-    resolution: {commit: ec966974f6898dc3dc8d484df786bfe940421131, repo: https://git.lumeweb.com/LumeWeb/kernel-peer-discovery-client.git, type: git}
+  git.lumeweb.com/LumeWeb/kernel-peer-discovery-client/63bd27fed253f3fd7e94a357d8ce88809328f34c:
+    resolution: {commit: 63bd27fed253f3fd7e94a357d8ce88809328f34c, repo: https://git.lumeweb.com/LumeWeb/kernel-peer-discovery-client.git, type: git}
     name: '@lumeweb/kernel-peer-discovery-client'
     version: 0.1.0
     dependencies:
       '@hyperswarm/dht-relay': 0.3.0
-      '@lumeweb/libkernel-universal': git.lumeweb.com/LumeWeb/libkernel-universal/0bc5807c6afdcc95ed960a6ba2c304388fa67f28
+      '@lumeweb/libkernel-universal': git.lumeweb.com/LumeWeb/libkernel-universal/abb26748abb3ca76d4489bf87a1c10a9901367ab
       '@lumeweb/peer-discovery': git.lumeweb.com/LumeWeb/peer-discovery/d2bd926275103d60fdd3c7c432eae5c278f49261
       '@siaweb/libweb': git.lumeweb.com/LumeWeb/libsiaweb/5e6cdba3e7d9a4b94e21ddcd5f2b5138fb440ee8
       hyperswarm: 4.3.7
@@ -775,8 +775,8 @@ packages:
       libkmodule: 0.2.53
     dev: false
 
-  git.lumeweb.com/LumeWeb/libkernel-universal/0bc5807c6afdcc95ed960a6ba2c304388fa67f28:
-    resolution: {commit: 0bc5807c6afdcc95ed960a6ba2c304388fa67f28, repo: https://git.lumeweb.com/LumeWeb/libkernel-universal.git, type: git}
+  git.lumeweb.com/LumeWeb/libkernel-universal/abb26748abb3ca76d4489bf87a1c10a9901367ab:
+    resolution: {commit: abb26748abb3ca76d4489bf87a1c10a9901367ab, repo: https://git.lumeweb.com/LumeWeb/libkernel-universal.git, type: git}
     name: '@lumeweb/libkernel-universal'
     version: 0.1.0
     dependencies:
