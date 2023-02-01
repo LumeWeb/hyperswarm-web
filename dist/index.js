@@ -4,6 +4,8 @@ import DhtNode from "@hyperswarm/dht-relay";
 import Stream from "@hyperswarm/dht-relay/ws";
 import { createClient } from "@lumeweb/kernel-peer-discovery-client";
 import { load } from "@lumeweb/libkernel-universal";
+// @ts-ignore
+import Hyperswarm from "hyperswarm";
 import randomNumber from "random-number-csprng";
 import EventEmitter from "eventemitter2";
 export default class HyperswarmWeb extends EventEmitter {
@@ -49,7 +51,10 @@ export default class HyperswarmWeb extends EventEmitter {
                 relays.splice(index, 1);
                 continue;
             }
-            this._activeRelay = new DhtNode(new Stream(true, new WebSocket(connection)), this._options);
+            this._activeRelay = new Hyperswarm({
+                dht: new DhtNode(new Stream(true, new WebSocket(connection)), this._options),
+                keyPair: this._options.keyPair,
+            });
             this._activeRelay.on("close", () => {
                 this._activeRelay = undefined;
             });
