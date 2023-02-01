@@ -97,6 +97,8 @@ export default class HyperswarmWeb extends EventEmitter {
     this._processQueuedActions();
     await this._activeRelay.dht.ready();
     this._connectionMutex.release();
+
+    this.emit("ready");
   }
 
   private async isServerAvailable(connection: string): Promise<boolean> {
