@@ -9,7 +9,7 @@ export default class HyperswarmWeb extends EventEmitter {
     private _queuedEmActions;
     private _connectionMutex;
     constructor(opts?: any);
-    ready(): Promise<void>;
+    init(): Promise<void>;
     private ensureConnection;
     private isServerAvailable;
     connect(pubkey: string, options?: {}): Promise<DhtNode>;

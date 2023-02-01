@@ -22,7 +22,7 @@ export default class HyperswarmWeb extends EventEmitter {
         this._options = opts;
         this._discovery = createClient();
     }
-    ready() {
+    init() {
         return this.ensureConnection();
     }
     async ensureConnection() {
