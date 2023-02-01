@@ -76,7 +76,7 @@ export default class HyperswarmWeb extends EventEmitter {
       this._activeRelay.on("close", () => {
         this._activeRelay = undefined;
       });
-    } while (relays.length > 0);
+    } while (relays.length > 0 && !this._activeRelay);
 
     if (!this._activeRelay) {
       throw new Error("Failed to find an available relay");
