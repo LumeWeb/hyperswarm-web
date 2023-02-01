@@ -68,10 +68,13 @@ export default class HyperswarmWeb extends EventEmitter {
         continue;
       }
 
-      this._activeRelay = new DhtNode(
-        new Stream(true, new WebSocket(connection)),
-        this._options
-      );
+      this._activeRelay = new Hyperswarm({
+        dht: new DhtNode(
+          new Stream(true, new WebSocket(connection)),
+          this._options
+        ),
+        keyPair: this._options.keyPair,
+      });
 
       this._activeRelay.on("close", () => {
         this._activeRelay = undefined;
@@ -83,7 +86,7 @@ export default class HyperswarmWeb extends EventEmitter {
     }
 
     this._processQueuedActions();
-    await this._activeRelay.ready();
+    await this._activeRelay.dht.ready();
   }
 
   private async isServerAvailable(connection: string): Promise<boolean> {
