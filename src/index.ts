@@ -197,4 +197,29 @@ export default class HyperswarmWeb extends EventEmitter {
 
     this._queuedEmActions = [];
   }
+
+  public join(topic: Uint8Array, opts = {}) {
+    return this._activeRelay?.join(topic, opts);
+  }
+  public joinPeer(publicKey: Uint8Array) {
+    return this._activeRelay?.joinPeer(publicKey);
+  }
+  public leave(topic: Uint8Array) {
+    return this._activeRelay?.leave(topic);
+  }
+  public leavePeer(publicKey: Uint8Array) {
+    return this._activeRelay?.leavePeer(publicKey);
+  }
+  public status(publicKey: Uint8Array) {
+    return this._activeRelay?.status(publicKey);
+  }
+  public topics(): string[] {
+    return this._activeRelay?.topics();
+  }
+  public async flush(): Promise<any> {
+    return this._activeRelay?.flush();
+  }
+  public async clear(): Promise<any> {
+    return this._activeRelay?.clear();
+  }
 }
