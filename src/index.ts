@@ -13,6 +13,7 @@ import { load } from "@lumeweb/libkernel-universal";
 import Hyperswarm from "hyperswarm";
 import randomNumber from "random-number-csprng";
 import EventEmitter from "eventemitter2";
+import { Mutex } from "async-mutex";
 
 export default class HyperswarmWeb extends EventEmitter {
   private _options: any;
@@ -20,6 +21,8 @@ export default class HyperswarmWeb extends EventEmitter {
   private _activeRelay: Hyperswarm;
   private _discovery: PeerDiscoveryClient;
   private _queuedEmActions: [string, any][] = [];
+
+  private _connectionMutex: Mutex = new Mutex();
   constructor(opts: any = {}) {
     super();
     opts.custodial = false;
@@ -34,59 +37,66 @@ export default class HyperswarmWeb extends EventEmitter {
   private async ensureConnection(): Promise<any> {
     const logErr = (await load()).logErr;
 
+    await this._connectionMutex.waitForUnlock();
+    this._connectionMutex.acquire();
+
     if (this._activeRelay) {
       return;
     }
 
     const relays = this.relays;
 
-    do {
-      const index =
-        relays.length > 1 ? await randomNumber(0, relays.length - 1) : 0;
-      const relay = relays[index];
+    if (relays.length > 0) {
+      do {
+        const index =
+          relays.length > 1 ? await randomNumber(0, relays.length - 1) : 0;
+        const relay = relays[index];
 
-      let ret;
-      try {
-        ret = await this._discovery.discover(relay);
-      } catch (e) {
-        logErr(e);
-        relays.splice(index, 1);
-        continue;
-      }
+        let ret;
+        try {
+          ret = await this._discovery.discover(relay);
+        } catch (e) {
+          logErr(e);
+          relays.splice(index, 1);
+          continue;
+        }
 
-      if (!ret) {
-        relays.splice(index, 1);
-        continue;
-      }
+        if (!ret) {
+          relays.splice(index, 1);
+          continue;
+        }
 
-      ret = ret as Peer;
+        ret = ret as Peer;
 
-      const connection = `wss://${ret.host}:${ret.port}`;
+        const connection = `wss://${ret.host}:${ret.port}`;
 
-      if (!(await this.isServerAvailable(connection))) {
-        relays.splice(index, 1);
-        continue;
-      }
+        if (!(await this.isServerAvailable(connection))) {
+          relays.splice(index, 1);
+          continue;
+        }
 
-      this._activeRelay = new Hyperswarm({
-        dht: new DhtNode(
-          new Stream(true, new WebSocket(connection)),
-          this._options
-        ),
-        keyPair: this._options.keyPair,
-      });
+        this._activeRelay = new Hyperswarm({
+          dht: new DhtNode(
+            new Stream(true, new WebSocket(connection)),
+            this._options
+          ),
+          keyPair: this._options.keyPair,
+        });
 
-      this._activeRelay.on("close", () => {
-        this._activeRelay = undefined;
-      });
-    } while (relays.length > 0 && !this._activeRelay);
+        this._activeRelay.on("close", () => {
+          this._activeRelay = undefined;
+        });
+      } while (relays.length > 0 && !this._activeRelay);
+    }
 
     if (!this._activeRelay) {
+      this._connectionMutex.release();
       throw new Error("Failed to find an available relay");
     }
 
     this._processQueuedActions();
     await this._activeRelay.dht.ready();
+    this._connectionMutex.release();
   }
 
   private async isServerAvailable(connection: string): Promise<boolean> {

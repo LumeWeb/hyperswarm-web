@@ -6,6 +6,7 @@ specifiers:
   '@lumeweb/libkernel-universal': git+https://git.lumeweb.com/LumeWeb/libkernel-universal.git
   '@types/random-number-csprng': ^1.0.0
   '@types/ws': ^8.5.4
+  async-mutex: ^0.4.0
   esbuild: ^0.14.54
   eventemitter2: ^6.4.9
   hyperswarm: ^4.3.7
@@ -15,8 +16,9 @@ specifiers:
 
 dependencies:
   '@hyperswarm/dht-relay': 0.3.0
-  '@lumeweb/kernel-peer-discovery-client': git.lumeweb.com/LumeWeb/kernel-peer-discovery-client/e5ed06e1df9f60bee10980ff8b337fe2990f4b52
-  '@lumeweb/libkernel-universal': git.lumeweb.com/LumeWeb/libkernel-universal/fb377db59fd24761d140eb98f49166ea1cc7cc39
+  '@lumeweb/kernel-peer-discovery-client': git.lumeweb.com/LumeWeb/kernel-peer-discovery-client/ec966974f6898dc3dc8d484df786bfe940421131
+  '@lumeweb/libkernel-universal': git.lumeweb.com/LumeWeb/libkernel-universal/0bc5807c6afdcc95ed960a6ba2c304388fa67f28
+  async-mutex: 0.4.0
   eventemitter2: 6.4.9
   hyperswarm: 4.3.7
 
@@ -106,6 +108,12 @@ packages:
     dependencies:
       '@types/node': 18.11.18
     dev: true
+
+  /async-mutex/0.4.0:
+    resolution: {integrity: sha512-eJFZ1YhRR8UN8eBLoNzcDPcy/jqjsg6I1AP+KvWQX80BqOSW1oJPJXDylPUEeMr2ZQvHgnQ//Lp6f3RQ1zI7HA==}
+    dependencies:
+      tslib: 2.5.0
+    dev: false
 
   /b4a/1.6.1:
     resolution: {integrity: sha512-AsKjNhz72yxteo/0EtQEiwkMUgk/tGmycXlbG4g3Ard2/ULtNLUykGOkeK0egmN27h0xMAhb76jYccW+XTBExA==}
@@ -716,6 +724,10 @@ packages:
     resolution: {integrity: sha512-SVqEcMZBsZF9mA78rjzCrYrUs37LMJk3ShZ851ygZYW1cMeIjs9mL57KO6Iv5mmjSQnOe/29/VAfGXo+oRCiVw==}
     dev: false
 
+  /tslib/2.5.0:
+    resolution: {integrity: sha512-336iVw3rtn2BUK7ORdIAHTyxHGRIHVReokCR3XjbckJMK7ms8FysBfhLR8IXnAgy7T0PTPNBWKiH514FOW/WSg==}
+    dev: false
+
   /typescript/4.9.5:
     resolution: {integrity: sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==}
     engines: {node: '>=4.2.0'}
@@ -749,13 +761,13 @@ packages:
     resolution: {integrity: sha512-FIr/DEeoHfj7ftfylnoFt3rAIRoWXpx2AoDfrT2qD2wtp7Dp+COajvs/Icb7uHqRW9m60f5iXZwdsJJO3kvb7w==}
     dev: false
 
-  git.lumeweb.com/LumeWeb/kernel-peer-discovery-client/e5ed06e1df9f60bee10980ff8b337fe2990f4b52:
-    resolution: {commit: e5ed06e1df9f60bee10980ff8b337fe2990f4b52, repo: https://git.lumeweb.com/LumeWeb/kernel-peer-discovery-client.git, type: git}
+  git.lumeweb.com/LumeWeb/kernel-peer-discovery-client/ec966974f6898dc3dc8d484df786bfe940421131:
+    resolution: {commit: ec966974f6898dc3dc8d484df786bfe940421131, repo: https://git.lumeweb.com/LumeWeb/kernel-peer-discovery-client.git, type: git}
     name: '@lumeweb/kernel-peer-discovery-client'
     version: 0.1.0
     dependencies:
       '@hyperswarm/dht-relay': 0.3.0
-      '@lumeweb/libkernel-universal': git.lumeweb.com/LumeWeb/libkernel-universal/fb377db59fd24761d140eb98f49166ea1cc7cc39
+      '@lumeweb/libkernel-universal': git.lumeweb.com/LumeWeb/libkernel-universal/0bc5807c6afdcc95ed960a6ba2c304388fa67f28
       '@lumeweb/peer-discovery': git.lumeweb.com/LumeWeb/peer-discovery/d2bd926275103d60fdd3c7c432eae5c278f49261
       '@siaweb/libweb': git.lumeweb.com/LumeWeb/libsiaweb/5e6cdba3e7d9a4b94e21ddcd5f2b5138fb440ee8
       hyperswarm: 4.3.7
@@ -763,12 +775,13 @@ packages:
       libkmodule: 0.2.53
     dev: false
 
-  git.lumeweb.com/LumeWeb/libkernel-universal/fb377db59fd24761d140eb98f49166ea1cc7cc39:
-    resolution: {commit: fb377db59fd24761d140eb98f49166ea1cc7cc39, repo: https://git.lumeweb.com/LumeWeb/libkernel-universal.git, type: git}
+  git.lumeweb.com/LumeWeb/libkernel-universal/0bc5807c6afdcc95ed960a6ba2c304388fa67f28:
+    resolution: {commit: 0bc5807c6afdcc95ed960a6ba2c304388fa67f28, repo: https://git.lumeweb.com/LumeWeb/libkernel-universal.git, type: git}
     name: '@lumeweb/libkernel-universal'
     version: 0.1.0
     dependencies:
       '@siaweb/libweb': git.lumeweb.com/LumeWeb/libsiaweb/5e6cdba3e7d9a4b94e21ddcd5f2b5138fb440ee8
+      eventemitter2: 6.4.9
       libkernel: 0.1.48
       libkmodule: 0.2.53
     dev: false
