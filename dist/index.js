@@ -95,22 +95,22 @@ export default class HyperswarmWeb extends EventEmitter {
         this._relays.clear();
     }
     on(eventName, listener) {
-        return this._processOrQueueAction("on", arguments);
+        return this._processOrQueueAction("on", ...arguments);
     }
     addListener(eventName, listener) {
         return this.on(eventName, listener);
     }
     off(eventName, listener) {
-        return this._processOrQueueAction("off", arguments);
+        return this._processOrQueueAction("off", ...arguments);
     }
     removeListener(eventName, listener) {
         return this.off(eventName, listener);
     }
     emit(eventName, ...args) {
-        return this._processOrQueueAction("emit", arguments);
+        return this._processOrQueueAction("emit", ...arguments);
     }
     once(eventName, listener) {
-        return this._processOrQueueAction("once", arguments);
+        return this._processOrQueueAction("once", ...arguments);
     }
     _processOrQueueAction(method, ...args) {
         if (this._activeRelay) {
