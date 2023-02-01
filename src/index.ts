@@ -30,7 +30,7 @@ export default class HyperswarmWeb extends EventEmitter {
     this._discovery = createClient();
   }
 
-  ready(): Promise<void> {
+  init(): Promise<void> {
     return this.ensureConnection();
   }
 
