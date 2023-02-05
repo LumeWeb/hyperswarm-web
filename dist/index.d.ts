@@ -26,10 +26,10 @@ export default class HyperswarmWeb extends EventEmitter {
     once(eventName: string | symbol, listener: (...args: any[]) => void): this;
     private _processOrQueueAction;
     private _processQueuedActions;
-    join(topic: Uint8Array, opts?: {}): any;
-    joinPeer(publicKey: Uint8Array): any;
-    leave(topic: Uint8Array): any;
-    leavePeer(publicKey: Uint8Array): any;
+    join(topic: Uint8Array, opts?: {}): void;
+    joinPeer(publicKey: Uint8Array): void;
+    leave(topic: Uint8Array): void;
+    leavePeer(publicKey: Uint8Array): void;
     status(publicKey: Uint8Array): any;
     topics(): string[];
     flush(): Promise<any>;
