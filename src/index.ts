@@ -17,12 +17,10 @@ import { Mutex } from "async-mutex";
 
 export default class HyperswarmWeb extends EventEmitter {
   private _options: any;
-  private _relays: Set<string> = new Set();
-  private _activeRelay: Hyperswarm;
   private _discovery: PeerDiscoveryClient;
   private _queuedEmActions: [string, any][] = [];
-
   private _connectionMutex: Mutex = new Mutex();
+
   constructor(opts: any = {}) {
     super();
     opts.custodial = false;
@@ -30,12 +28,120 @@ export default class HyperswarmWeb extends EventEmitter {
     this._discovery = createClient();
   }
 
+  private _relays: Set<string> = new Set();
+
+  get relays(): string[] {
+    return [...this._relays.values()];
+  }
+
+  private _activeRelay: Hyperswarm;
+
   get activeRelay(): Hyperswarm {
     return this._activeRelay;
   }
 
+  private _ready = false;
+
+  get ready(): boolean {
+    return this._ready;
+  }
+
   init(): Promise<void> {
     return this.ensureConnection();
+  }
+
+  async connect(pubkey: string, options = {}): Promise<DhtNode> {
+    if (!this._activeRelay) {
+      await this.ensureConnection();
+    }
+
+    return this._activeRelay.connect(pubkey, options);
+  }
+
+  public async addRelay(pubkey: string): Promise<void> {
+    this._relays.add(pubkey);
+  }
+
+  public removeRelay(pubkey: string): boolean {
+    if (!this._relays.has(pubkey)) {
+      return false;
+    }
+
+    this._relays.delete(pubkey);
+
+    return true;
+  }
+
+  public clearRelays(): void {
+    this._relays.clear();
+  }
+
+  on(
+    eventName: string | symbol,
+    listener: (...args: any[]) => void
+  ): Hyperswarm {
+    return this._processOrQueueAction("on", ...arguments);
+  }
+
+  addListener(
+    eventName: string | symbol,
+    listener: (...args: any[]) => void
+  ): this {
+    return this.on(eventName, listener);
+  }
+
+  off(
+    eventName: string | symbol,
+    listener: (...args: any[]) => void
+  ): Hyperswarm {
+    return this._processOrQueueAction("off", ...arguments);
+  }
+
+  removeListener(
+    eventName: string | symbol,
+    listener: (...args: any[]) => void
+  ): this {
+    return this.off(eventName, listener);
+  }
+
+  emit(eventName: string | symbol, ...args: any[]): boolean {
+    return this._processOrQueueAction("emit", ...arguments);
+  }
+
+  once(eventName: string | symbol, listener: (...args: any[]) => void): this {
+    return this._processOrQueueAction("once", ...arguments);
+  }
+
+  public join(topic: Uint8Array, opts = {}): void {
+    return this._processOrQueueAction("join", ...arguments);
+  }
+
+  public joinPeer(publicKey: Uint8Array): void {
+    return this._processOrQueueAction("joinPeer", ...arguments);
+  }
+
+  public leave(topic: Uint8Array): void {
+    return this._processOrQueueAction("leave", ...arguments);
+  }
+
+  public leavePeer(publicKey: Uint8Array): void {
+    return this._processOrQueueAction("leavePeer", ...arguments);
+  }
+
+  public status(publicKey: Uint8Array) {
+    return this._activeRelay?.status(publicKey);
+  }
+
+  public topics(): string[] {
+    return this._activeRelay?.topics();
+  }
+
+  public async flush(): Promise<any> {
+    return this._activeRelay?.flush();
+  }
+
+  public async clear(): Promise<any> {
+    return this._activeRelay?.clear();
   }
 
   private async ensureConnection(): Promise<any> {
@@ -89,6 +195,7 @@ export default class HyperswarmWeb extends EventEmitter {
 
         this._activeRelay.on("close", () => {
           this._activeRelay = undefined;
+          this._ready = false;
         });
       } while (relays.length > 0 && !this._activeRelay);
     }
@@ -102,6 +209,7 @@ export default class HyperswarmWeb extends EventEmitter {
     await this._activeRelay.dht.ready();
     this._connectionMutex.release();
 
+    this._ready = true;
     this.emit("ready");
   }
 
@@ -116,69 +224,6 @@ export default class HyperswarmWeb extends EventEmitter {
         resolve(false);
       });
     });
-  }
-  async connect(pubkey: string, options = {}): Promise<DhtNode> {
-    if (!this._activeRelay) {
-      await this.ensureConnection();
-    }
-
-    return this._activeRelay.connect(pubkey, options);
-  }
-
-  get relays(): string[] {
-    return [...this._relays.values()];
-  }
-
-  public async addRelay(pubkey: string): Promise<void> {
-    this._relays.add(pubkey);
-  }
-
-  public removeRelay(pubkey: string): boolean {
-    if (!this._relays.has(pubkey)) {
-      return false;
-    }
-
-    this._relays.delete(pubkey);
-
-    return true;
-  }
-
-  public clearRelays(): void {
-    this._relays.clear();
-  }
-
-  on(
-    eventName: string | symbol,
-    listener: (...args: any[]) => void
-  ): Hyperswarm {
-    return this._processOrQueueAction("on", ...arguments);
-  }
-  addListener(
-    eventName: string | symbol,
-    listener: (...args: any[]) => void
-  ): this {
-    return this.on(eventName, listener);
-  }
-
-  off(
-    eventName: string | symbol,
-    listener: (...args: any[]) => void
-  ): Hyperswarm {
-    return this._processOrQueueAction("off", ...arguments);
-  }
-
-  removeListener(
-    eventName: string | symbol,
-    listener: (...args: any[]) => void
-  ): this {
-    return this.off(eventName, listener);
-  }
-  emit(eventName: string | symbol, ...args: any[]): boolean {
-    return this._processOrQueueAction("emit", ...arguments);
-  }
-
-  once(eventName: string | symbol, listener: (...args: any[]) => void): this {
-    return this._processOrQueueAction("once", ...arguments);
   }
 
   private _processOrQueueAction(method: string, ...args: any[]) {
@@ -196,30 +241,5 @@ export default class HyperswarmWeb extends EventEmitter {
     }
 
     this._queuedEmActions = [];
-  }
-
-  public join(topic: Uint8Array, opts = {}): void {
-    return this._processOrQueueAction("join", ...arguments);
-  }
-  public joinPeer(publicKey: Uint8Array): void {
-    return this._processOrQueueAction("joinPeer", ...arguments);
-  }
-  public leave(topic: Uint8Array): void {
-    return this._processOrQueueAction("leave", ...arguments);
-  }
-  public leavePeer(publicKey: Uint8Array): void {
-    return this._processOrQueueAction("leavePeer", ...arguments);
-  }
-  public status(publicKey: Uint8Array) {
-    return this._activeRelay?.status(publicKey);
-  }
-  public topics(): string[] {
-    return this._activeRelay?.topics();
-  }
-  public async flush(): Promise<any> {
-    return this._activeRelay?.flush();
-  }
-  public async clear(): Promise<any> {
-    return this._activeRelay?.clear();
   }
 }
