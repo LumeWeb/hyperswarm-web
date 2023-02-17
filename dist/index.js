@@ -131,7 +131,7 @@ export default class HyperswarmWeb extends EventEmitter {
                     dht: new DhtNode(new Stream(true, new WebSocket(connection)), this._options),
                     keyPair: this._options.keyPair,
                 });
-                this._activeRelay.on("close", () => {
+                this._activeRelay.dht._protocol._stream.once("close", () => {
                     this._activeRelay = undefined;
                     this._ready = false;
                 });
