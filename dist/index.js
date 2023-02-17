@@ -11,8 +11,6 @@ import EventEmitter from "eventemitter2";
 import { Mutex } from "async-mutex";
 export default class HyperswarmWeb extends EventEmitter {
     _options;
-    _relays = new Set();
-    _activeRelay;
     _discovery;
     _queuedEmActions = [];
     _connectionMutex = new Mutex();
@@ -22,11 +20,81 @@ export default class HyperswarmWeb extends EventEmitter {
         this._options = opts;
         this._discovery = createClient();
     }
+    _relays = new Set();
+    get relays() {
+        return [...this._relays.values()];
+    }
+    _activeRelay;
     get activeRelay() {
         return this._activeRelay;
     }
+    _ready = false;
+    get ready() {
+        return this._ready;
+    }
     init() {
         return this.ensureConnection();
+    }
+    async connect(pubkey, options = {}) {
+        if (!this._activeRelay) {
+            await this.ensureConnection();
+        }
+        return this._activeRelay.connect(pubkey, options);
+    }
+    async addRelay(pubkey) {
+        this._relays.add(pubkey);
+    }
+    removeRelay(pubkey) {
+        if (!this._relays.has(pubkey)) {
+            return false;
+        }
+        this._relays.delete(pubkey);
+        return true;
+    }
+    clearRelays() {
+        this._relays.clear();
+    }
+    on(eventName, listener) {
+        return this._processOrQueueAction("on", ...arguments);
+    }
+    addListener(eventName, listener) {
+        return this.on(eventName, listener);
+    }
+    off(eventName, listener) {
+        return this._processOrQueueAction("off", ...arguments);
+    }
+    removeListener(eventName, listener) {
+        return this.off(eventName, listener);
+    }
+    emit(eventName, ...args) {
+        return this._processOrQueueAction("emit", ...arguments);
+    }
+    once(eventName, listener) {
+        return this._processOrQueueAction("once", ...arguments);
+    }
+    join(topic, opts = {}) {
+        return this._processOrQueueAction("join", ...arguments);
+    }
+    joinPeer(publicKey) {
+        return this._processOrQueueAction("joinPeer", ...arguments);
+    }
+    leave(topic) {
+        return this._processOrQueueAction("leave", ...arguments);
+    }
+    leavePeer(publicKey) {
+        return this._processOrQueueAction("leavePeer", ...arguments);
+    }
+    status(publicKey) {
+        return this._activeRelay?.status(publicKey);
+    }
+    topics() {
+        return this._activeRelay?.topics();
+    }
+    async flush() {
+        return this._activeRelay?.flush();
+    }
+    async clear() {
+        return this._activeRelay?.clear();
     }
     async ensureConnection() {
         const logErr = (await load()).logErr;
@@ -65,6 +133,7 @@ export default class HyperswarmWeb extends EventEmitter {
                 });
                 this._activeRelay.on("close", () => {
                     this._activeRelay = undefined;
+                    this._ready = false;
                 });
             } while (relays.length > 0 && !this._activeRelay);
         }
@@ -75,6 +144,7 @@ export default class HyperswarmWeb extends EventEmitter {
         this._processQueuedActions();
         await this._activeRelay.dht.ready();
         this._connectionMutex.release();
+        this._ready = true;
         this.emit("ready");
     }
     async isServerAvailable(connection) {
@@ -89,46 +159,6 @@ export default class HyperswarmWeb extends EventEmitter {
             });
         });
     }
-    async connect(pubkey, options = {}) {
-        if (!this._activeRelay) {
-            await this.ensureConnection();
-        }
-        return this._activeRelay.connect(pubkey, options);
-    }
-    get relays() {
-        return [...this._relays.values()];
-    }
-    async addRelay(pubkey) {
-        this._relays.add(pubkey);
-    }
-    removeRelay(pubkey) {
-        if (!this._relays.has(pubkey)) {
-            return false;
-        }
-        this._relays.delete(pubkey);
-        return true;
-    }
-    clearRelays() {
-        this._relays.clear();
-    }
-    on(eventName, listener) {
-        return this._processOrQueueAction("on", ...arguments);
-    }
-    addListener(eventName, listener) {
-        return this.on(eventName, listener);
-    }
-    off(eventName, listener) {
-        return this._processOrQueueAction("off", ...arguments);
-    }
-    removeListener(eventName, listener) {
-        return this.off(eventName, listener);
-    }
-    emit(eventName, ...args) {
-        return this._processOrQueueAction("emit", ...arguments);
-    }
-    once(eventName, listener) {
-        return this._processOrQueueAction("once", ...arguments);
-    }
     _processOrQueueAction(method, ...args) {
         if (this._activeRelay) {
             return this._activeRelay[method](...args);
@@ -141,29 +171,5 @@ export default class HyperswarmWeb extends EventEmitter {
             this._activeRelay[action[0]](...action[1]);
         }
         this._queuedEmActions = [];
-    }
-    join(topic, opts = {}) {
-        return this._processOrQueueAction("join", ...arguments);
-    }
-    joinPeer(publicKey) {
-        return this._processOrQueueAction("joinPeer", ...arguments);
-    }
-    leave(topic) {
-        return this._processOrQueueAction("leave", ...arguments);
-    }
-    leavePeer(publicKey) {
-        return this._processOrQueueAction("leavePeer", ...arguments);
-    }
-    status(publicKey) {
-        return this._activeRelay?.status(publicKey);
-    }
-    topics() {
-        return this._activeRelay?.topics();
-    }
-    async flush() {
-        return this._activeRelay?.flush();
-    }
-    async clear() {
-        return this._activeRelay?.clear();
     }
 }
