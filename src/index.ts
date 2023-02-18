@@ -12,7 +12,7 @@ import { load } from "@lumeweb/libkernel-universal";
 // @ts-ignore
 import Hyperswarm from "hyperswarm";
 import randomNumber from "random-number-csprng";
-import EventEmitter from "eventemitter2";
+import EventEmitter, { OnOptions } from "eventemitter2";
 import { Mutex } from "async-mutex";
 
 export default class HyperswarmWeb extends EventEmitter {
@@ -83,6 +83,14 @@ export default class HyperswarmWeb extends EventEmitter {
     return this._processOrQueueAction("on", ...arguments);
   }
 
+  onSelf(
+    eventName: string | symbol,
+    listener: (...args: any[]) => void,
+    options?: boolean | OnOptions
+  ): Hyperswarm {
+    return super.on(eventName, listener, options);
+  }
+
   addListener(
     eventName: string | symbol,
     listener: (...args: any[]) => void
@@ -106,6 +114,10 @@ export default class HyperswarmWeb extends EventEmitter {
 
   emit(eventName: string | symbol, ...args: any[]): boolean {
     return this._processOrQueueAction("emit", ...arguments);
+  }
+
+  emitSelf(eventName: string | symbol, ...args: any[]): boolean {
+    return super.emit(eventName, ...args);
   }
 
   once(eventName: string | symbol, listener: (...args: any[]) => void): this {
@@ -204,6 +216,8 @@ export default class HyperswarmWeb extends EventEmitter {
       this._connectionMutex.release();
       throw new Error("Failed to find an available relay");
     }
+
+    this.emitSelf("init");
 
     this._processQueuedActions();
     await this._activeRelay.dht.ready();
