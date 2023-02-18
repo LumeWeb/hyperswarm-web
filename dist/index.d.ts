@@ -1,6 +1,6 @@
 import DhtNode from "@hyperswarm/dht-relay";
 import Hyperswarm from "hyperswarm";
-import EventEmitter from "eventemitter2";
+import EventEmitter, { OnOptions } from "eventemitter2";
 export default class HyperswarmWeb extends EventEmitter {
     private _options;
     private _discovery;
@@ -19,10 +19,12 @@ export default class HyperswarmWeb extends EventEmitter {
     removeRelay(pubkey: string): boolean;
     clearRelays(): void;
     on(eventName: string | symbol, listener: (...args: any[]) => void): Hyperswarm;
+    onSelf(eventName: string | symbol, listener: (...args: any[]) => void, options?: boolean | OnOptions): Hyperswarm;
     addListener(eventName: string | symbol, listener: (...args: any[]) => void): this;
     off(eventName: string | symbol, listener: (...args: any[]) => void): Hyperswarm;
     removeListener(eventName: string | symbol, listener: (...args: any[]) => void): this;
     emit(eventName: string | symbol, ...args: any[]): boolean;
+    emitSelf(eventName: string | symbol, ...args: any[]): boolean;
     once(eventName: string | symbol, listener: (...args: any[]) => void): this;
     join(topic: Uint8Array, opts?: {}): void;
     joinPeer(publicKey: Uint8Array): void;

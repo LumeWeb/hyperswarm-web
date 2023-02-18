@@ -57,6 +57,9 @@ export default class HyperswarmWeb extends EventEmitter {
     on(eventName, listener) {
         return this._processOrQueueAction("on", ...arguments);
     }
+    onSelf(eventName, listener, options) {
+        return super.on(eventName, listener, options);
+    }
     addListener(eventName, listener) {
         return this.on(eventName, listener);
     }
@@ -68,6 +71,9 @@ export default class HyperswarmWeb extends EventEmitter {
     }
     emit(eventName, ...args) {
         return this._processOrQueueAction("emit", ...arguments);
+    }
+    emitSelf(eventName, ...args) {
+        return super.emit(eventName, ...args);
     }
     once(eventName, listener) {
         return this._processOrQueueAction("once", ...arguments);
@@ -141,6 +147,7 @@ export default class HyperswarmWeb extends EventEmitter {
             this._connectionMutex.release();
             throw new Error("Failed to find an available relay");
         }
+        this.emitSelf("init");
         this._processQueuedActions();
         await this._activeRelay.dht.ready();
         this._connectionMutex.release();
