@@ -105,6 +105,13 @@ export default class HyperswarmWeb extends EventEmitter {
     return this._processOrQueueAction("off", ...arguments);
   }
 
+  offSelf(
+    eventName: string | symbol,
+    listener: (...args: any[]) => void
+  ): Hyperswarm {
+    return super.off(eventName, listener);
+  }
+
   removeListener(
     eventName: string | symbol,
     listener: (...args: any[]) => void
@@ -122,6 +129,13 @@ export default class HyperswarmWeb extends EventEmitter {
 
   once(eventName: string | symbol, listener: (...args: any[]) => void): this {
     return this._processOrQueueAction("once", ...arguments);
+  }
+
+  onceSelf(
+    eventName: string | symbol,
+    listener: (...args: any[]) => void
+  ): this {
+    return this.once(eventName, listener);
   }
 
   public join(topic: Uint8Array, opts = {}): void {
