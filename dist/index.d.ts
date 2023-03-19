@@ -22,10 +22,12 @@ export default class HyperswarmWeb extends EventEmitter {
     onSelf(eventName: string | symbol, listener: (...args: any[]) => void, options?: boolean | OnOptions): Hyperswarm;
     addListener(eventName: string | symbol, listener: (...args: any[]) => void): this;
     off(eventName: string | symbol, listener: (...args: any[]) => void): Hyperswarm;
+    offSelf(eventName: string | symbol, listener: (...args: any[]) => void): Hyperswarm;
     removeListener(eventName: string | symbol, listener: (...args: any[]) => void): this;
     emit(eventName: string | symbol, ...args: any[]): boolean;
     emitSelf(eventName: string | symbol, ...args: any[]): boolean;
     once(eventName: string | symbol, listener: (...args: any[]) => void): this;
+    onceSelf(eventName: string | symbol, listener: (...args: any[]) => void): this;
     join(topic: Uint8Array, opts?: {}): void;
     joinPeer(publicKey: Uint8Array): void;
     leave(topic: Uint8Array): void;

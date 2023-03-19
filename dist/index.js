@@ -66,6 +66,9 @@ export default class HyperswarmWeb extends EventEmitter {
     off(eventName, listener) {
         return this._processOrQueueAction("off", ...arguments);
     }
+    offSelf(eventName, listener) {
+        return super.off(eventName, listener);
+    }
     removeListener(eventName, listener) {
         return this.off(eventName, listener);
     }
@@ -77,6 +80,9 @@ export default class HyperswarmWeb extends EventEmitter {
     }
     once(eventName, listener) {
         return this._processOrQueueAction("once", ...arguments);
+    }
+    onceSelf(eventName, listener) {
+        return this.once(eventName, listener);
     }
     join(topic, opts = {}) {
         return this._processOrQueueAction("join", ...arguments);
