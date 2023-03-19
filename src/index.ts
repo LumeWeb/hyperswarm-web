@@ -208,6 +208,7 @@ export default class HyperswarmWeb extends EventEmitter {
         this._activeRelay.dht._protocol._stream.once("close", () => {
           this._activeRelay = undefined;
           this._ready = false;
+          this.emitSelf("close");
         });
       } while (relays.length > 0 && !this._activeRelay);
     }
