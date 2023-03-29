@@ -110,8 +110,7 @@ export default class HyperswarmWeb extends EventEmitter {
     }
     async ensureConnection() {
         const logErr = (await load()).logErr;
-        await this._connectionMutex.waitForUnlock();
-        this._connectionMutex.acquire();
+        await this._connectionMutex.acquire();
         if (this._activeRelay) {
             this._connectionMutex.release();
             return;
