@@ -177,6 +177,7 @@ export default class HyperswarmWeb extends EventEmitter {
     this._connectionMutex.acquire();
 
     if (this._activeRelay) {
+      this._connectionMutex.release();
       return;
     }
 
