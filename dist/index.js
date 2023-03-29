@@ -113,6 +113,7 @@ export default class HyperswarmWeb extends EventEmitter {
         await this._connectionMutex.waitForUnlock();
         this._connectionMutex.acquire();
         if (this._activeRelay) {
+            this._connectionMutex.release();
             return;
         }
         const relays = this.relays;
