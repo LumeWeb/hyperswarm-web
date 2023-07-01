@@ -31,7 +31,8 @@
         "@lumeweb/libkernel": "0.1.0-develop.7",
         "async-mutex": "^0.4.0",
         "eventemitter2": "^6.4.9",
-        "hyperswarm": "^4.5.1"
+        "hyperswarm": "^4.5.1",
+        "random-number-csprng": "^1.0.2"
     },
     "readme": "ERROR: No README data found!",
     "files": [
