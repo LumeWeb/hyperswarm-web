@@ -1,7 +1,7 @@
 {
     "name": "@lumeweb/hyperswarm-web",
     "type": "module",
-    "version": "0.1.0",
+    "version": "0.0.2-develop.1",
     "main": "lib/index.js",
     "repository": {
         "type": "git",
@@ -34,7 +34,6 @@
         "hyperswarm": "^4.5.1"
     },
     "readme": "ERROR: No README data found!",
-    "_id": "@lumeweb/hyperswarm-web@0.1.0",
     "files": [
         "lib/**"
     ],
