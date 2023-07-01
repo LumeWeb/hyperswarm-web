@@ -7,15 +7,14 @@ import type {
   PeerDiscoveryClient,
   Peer,
 } from "@lumeweb/kernel-peer-discovery-client";
-import { load } from "@lumeweb/libkernel-universal";
-
 // @ts-ignore
 import Hyperswarm from "hyperswarm";
 import randomNumber from "random-number-csprng";
 import EventEmitter, { OnOptions } from "eventemitter2";
 import { Mutex } from "async-mutex";
+import { logErr } from "@lumeweb/libkernel";
 
-export default class HyperswarmWeb extends EventEmitter {
+export default class HyperswarmWeb extends EventEmitter.default {
   private _options: any;
   private _discovery: PeerDiscoveryClient;
   private _queuedEmActions: [string, any][] = [];
@@ -78,7 +77,7 @@ export default class HyperswarmWeb extends EventEmitter {
 
   on(
     eventName: string | symbol,
-    listener: (...args: any[]) => void
+    listener: (...args: any[]) => void,
   ): Hyperswarm {
     return this._processOrQueueAction("on", ...arguments);
   }
@@ -86,35 +85,35 @@ export default class HyperswarmWeb extends EventEmitter {
   onSelf(
     eventName: string | symbol,
     listener: (...args: any[]) => void,
-    options?: boolean | OnOptions
+    options?: boolean | OnOptions,
   ): Hyperswarm {
     return super.on(eventName, listener, options);
   }
 
   addListener(
     eventName: string | symbol,
-    listener: (...args: any[]) => void
+    listener: (...args: any[]) => void,
   ): this {
     return this.on(eventName, listener);
   }
 
   off(
     eventName: string | symbol,
-    listener: (...args: any[]) => void
+    listener: (...args: any[]) => void,
   ): Hyperswarm {
     return this._processOrQueueAction("off", ...arguments);
   }
 
   offSelf(
     eventName: string | symbol,
-    listener: (...args: any[]) => void
+    listener: (...args: any[]) => void,
   ): Hyperswarm {
     return super.off(eventName, listener);
   }
 
   removeListener(
     eventName: string | symbol,
-    listener: (...args: any[]) => void
+    listener: (...args: any[]) => void,
   ): this {
     return this.off(eventName, listener);
   }
@@ -133,7 +132,7 @@ export default class HyperswarmWeb extends EventEmitter {
 
   onceSelf(
     eventName: string | symbol,
-    listener: (...args: any[]) => void
+    listener: (...args: any[]) => void,
   ): this {
     return this.once(eventName, listener);
   }
@@ -171,8 +170,6 @@ export default class HyperswarmWeb extends EventEmitter {
   }
 
   private async ensureConnection(): Promise<any> {
-    const logErr = (await load()).logErr;
-
     await this._connectionMutex.acquire();
 
     if (this._activeRelay) {
@@ -214,7 +211,7 @@ export default class HyperswarmWeb extends EventEmitter {
         this._activeRelay = new Hyperswarm({
           dht: new DhtNode(
             new Stream(true, new WebSocket(connection)),
-            this._options
+            this._options,
           ),
           keyPair: this._options.keyPair,
         });

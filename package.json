@@ -2,24 +2,43 @@
     "name": "@lumeweb/hyperswarm-web",
     "type": "module",
     "version": "0.1.0",
-    "main": "dist/index.js",
+    "main": "lib/index.js",
+    "repository": {
+        "type": "git",
+        "url": "gitea@git.lumeweb.com:LumeWeb/hyperswarm-web.git"
+    },
     "scripts": {
-        "build": "rimraf dist && tsc"
+        "prepare": "presetter bootstrap",
+        "build": "run build",
+        "semantic-release": "semantic-release"
     },
     "devDependencies": {
+        "@lumeweb/node-library-preset": "^0.2.5",
         "@types/random-number-csprng": "^1.0.0",
-        "@types/ws": "^8.5.4",
+        "@types/ws": "^8.5.5",
+        "async-mutex": "^0.4.0",
         "esbuild": "^0.14.54",
-        "prettier": "^2.8.3",
+        "eventemitter2": "^6.4.9",
+        "hyperswarm": "^4.5.1",
+        "presetter": "*",
+        "prettier": "^2.8.8",
         "rimraf": "^3.0.2",
         "typescript": "^4.9.5"
     },
     "dependencies": {
-        "@hyperswarm/dht-relay": "^0.3.0",
-        "@lumeweb/kernel-peer-discovery-client": "git+https://git.lumeweb.com/LumeWeb/kernel-peer-discovery-client.git",
-        "@lumeweb/libkernel-universal": "git+https://git.lumeweb.com/LumeWeb/libkernel-universal.git",
+        "@hyperswarm/dht-relay": "^0.4.1",
+        "@lumeweb/kernel-peer-discovery-client": "^0.0.2-develop.1",
+        "@lumeweb/libkernel": "^0.1.0-develop.6",
         "async-mutex": "^0.4.0",
         "eventemitter2": "^6.4.9",
-        "hyperswarm": "^4.3.7"
+        "hyperswarm": "^4.5.1"
+    },
+    "readme": "ERROR: No README data found!",
+    "_id": "@lumeweb/hyperswarm-web@0.1.0",
+    "files": [
+        "lib/**"
+    ],
+    "publishConfig": {
+        "access": "public"
     }
 }
