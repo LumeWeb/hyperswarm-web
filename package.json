@@ -13,7 +13,7 @@
         "semantic-release": "semantic-release"
     },
     "devDependencies": {
-        "@lumeweb/node-library-preset": "^0.2.5",
+        "@lumeweb/node-library-preset": "^0.2.7",
         "@types/random-number-csprng": "^1.0.0",
         "@types/ws": "^8.5.5",
         "async-mutex": "^0.4.0",
@@ -27,7 +27,7 @@
     },
     "dependencies": {
         "@hyperswarm/dht-relay": "^0.4.1",
-        "@lumeweb/kernel-peer-discovery-client": "^0.0.2-develop.4",
+        "@lumeweb/kernel-peer-discovery-client": "^0.0.2-develop.5",
         "@lumeweb/libkernel": "0.1.0-develop.7",
         "async-mutex": "^0.4.0",
         "eventemitter2": "^6.4.9",
