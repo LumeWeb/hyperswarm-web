@@ -10,11 +10,11 @@ import type {
 // @ts-ignore
 import Hyperswarm from "hyperswarm";
 import randomNumber from "random-number-csprng";
-import EventEmitter, { OnOptions } from "eventemitter2";
 import { Mutex } from "async-mutex";
 import { logErr } from "@lumeweb/libkernel";
+import Emittery from "emittery";
 
-export default class HyperswarmWeb extends EventEmitter.default {
+export default class HyperswarmWeb extends Emittery {
   private _options: any;
   private _discovery: PeerDiscoveryClient;
   private _queuedEmActions: [string, any][] = [];
@@ -75,6 +75,7 @@ export default class HyperswarmWeb extends EventEmitter.default {
     this._relays.clear();
   }
 
+  // @ts-ignore
   on(
     eventName: string | symbol,
     listener: (...args: any[]) => void,
@@ -85,9 +86,8 @@ export default class HyperswarmWeb extends EventEmitter.default {
   onSelf(
     eventName: string | symbol,
     listener: (...args: any[]) => void,
-    options?: boolean | OnOptions,
   ): Hyperswarm {
-    return super.on(eventName, listener, options);
+    return super.on(eventName, listener);
   }
 
   addListener(
@@ -97,6 +97,7 @@ export default class HyperswarmWeb extends EventEmitter.default {
     return this.on(eventName, listener);
   }
 
+  // @ts-ignore
   off(
     eventName: string | symbol,
     listener: (...args: any[]) => void,
@@ -118,14 +119,16 @@ export default class HyperswarmWeb extends EventEmitter.default {
     return this.off(eventName, listener);
   }
 
+  // @ts-ignore
   emit(eventName: string | symbol, ...args: any[]): boolean {
     return this._processOrQueueAction("emit", ...arguments);
   }
 
-  emitSelf(eventName: string | symbol, ...args: any[]): boolean {
-    return super.emit(eventName, ...args);
+  async emitSelf(eventName: string | symbol, ...args: any): Promise<void> {
+    return super.emit(eventName, { ...args });
   }
 
+  // @ts-ignore
   once(eventName: string | symbol, listener: (...args: any[]) => void): this {
     return this._processOrQueueAction("once", ...arguments);
   }
@@ -216,10 +219,10 @@ export default class HyperswarmWeb extends EventEmitter.default {
           keyPair: this._options.keyPair,
         });
 
-        this._activeRelay.dht._protocol._stream.once("close", () => {
+        this._activeRelay.dht._protocol._stream.once("close", async () => {
           this._activeRelay = undefined;
           this._ready = false;
-          this.emitSelf("close");
+          await this.emitSelf("close");
         });
       } while (relays.length > 0 && !this._activeRelay);
     }
@@ -229,14 +232,14 @@ export default class HyperswarmWeb extends EventEmitter.default {
       throw new Error("Failed to find an available relay");
     }
 
-    this.emitSelf("init");
+    await this.emitSelf("init");
 
     this._processQueuedActions();
     await this._activeRelay.dht.ready();
     this._connectionMutex.release();
 
     this._ready = true;
-    this.emit("ready");
+    await this.emit("ready");
   }
 
   private async isServerAvailable(connection: string): Promise<boolean> {

@@ -30,6 +30,7 @@
         "@lumeweb/kernel-peer-discovery-client": "^0.0.2-develop.5",
         "@lumeweb/libkernel": "0.1.0-develop.7",
         "async-mutex": "^0.4.0",
+        "emittery": "^1.0.1",
         "eventemitter2": "^6.4.9",
         "hyperswarm": "^4.5.1",
         "random-number-csprng": "^1.0.2"
