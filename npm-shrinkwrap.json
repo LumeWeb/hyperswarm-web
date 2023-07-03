@@ -1,12 +1,12 @@
 {
     "name": "@lumeweb/hyperswarm-web",
-    "version": "0.0.2-develop.6",
+    "version": "0.0.2-develop.7",
     "lockfileVersion": 3,
     "requires": true,
     "packages": {
         "": {
             "name": "@lumeweb/hyperswarm-web",
-            "version": "0.0.2-develop.6",
+            "version": "0.0.2-develop.7",
             "dependencies": {
                 "@hyperswarm/dht-relay": "^0.4.1",
                 "@lumeweb/kernel-peer-discovery-client": "^0.0.2-develop.5",
