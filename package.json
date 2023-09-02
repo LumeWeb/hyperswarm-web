@@ -27,7 +27,7 @@
     },
     "dependencies": {
         "@hyperswarm/dht-relay": "^0.4.1",
-        "@lumeweb/kernel-peer-discovery-client": "^0.0.2-develop.10",
+        "@lumeweb/kernel-peer-discovery-client": "^0.0.2-develop.11",
         "@lumeweb/libkernel": "0.1.0-develop.16",
         "async-mutex": "^0.4.0",
         "emittery": "^1.0.1",

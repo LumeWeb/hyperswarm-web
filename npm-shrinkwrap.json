@@ -9,7 +9,7 @@
             "version": "0.0.2-develop.7",
             "dependencies": {
                 "@hyperswarm/dht-relay": "^0.4.1",
-                "@lumeweb/kernel-peer-discovery-client": "^0.0.2-develop.10",
+                "@lumeweb/kernel-peer-discovery-client": "^0.0.2-develop.11",
                 "@lumeweb/libkernel": "0.1.0-develop.16",
                 "async-mutex": "^0.4.0",
                 "emittery": "^1.0.1",
@@ -1801,9 +1801,9 @@
             }
         },
         "node_modules/@lumeweb/kernel-peer-discovery-client": {
-            "version": "0.0.2-develop.10",
-            "resolved": "https://registry.npmjs.org/@lumeweb/kernel-peer-discovery-client/-/kernel-peer-discovery-client-0.0.2-develop.10.tgz",
-            "integrity": "sha512-fLtH6K7KF4aJ0VqobM0Hq86ne3GH3YlFiHnaCM1okL21QhadDqGtWO/jPSIUF2oRbaPMTi286Agz5ci+IgjKQA==",
+            "version": "0.0.2-develop.11",
+            "resolved": "https://registry.npmjs.org/@lumeweb/kernel-peer-discovery-client/-/kernel-peer-discovery-client-0.0.2-develop.11.tgz",
+            "integrity": "sha512-0VAThknKAPyznj7/4Af2MizezINuYjYElZ6mcUEfI8a5DXYaI5o5/eTnYRSs9w0BfDfQmmlChOQVihXoFng+7A==",
             "dependencies": {
                 "@hyperswarm/dht-relay": "^0.3.0",
                 "@lumeweb/libkernel": "0.1.0-develop.16",
