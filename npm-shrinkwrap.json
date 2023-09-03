@@ -9,7 +9,7 @@
             "version": "0.0.2-develop.10",
             "dependencies": {
                 "@hyperswarm/dht-relay": "^0.4.1",
-                "@lumeweb/kernel-peer-discovery-client": "^0.0.2-develop.14",
+                "@lumeweb/kernel-peer-discovery-client": "^0.0.2-develop.15",
                 "@lumeweb/libkernel": "0.1.0-develop.39",
                 "async-mutex": "^0.4.0",
                 "emittery": "^1.0.1",
@@ -1801,12 +1801,12 @@
             }
         },
         "node_modules/@lumeweb/kernel-peer-discovery-client": {
-            "version": "0.0.2-develop.14",
-            "resolved": "https://registry.npmjs.org/@lumeweb/kernel-peer-discovery-client/-/kernel-peer-discovery-client-0.0.2-develop.14.tgz",
-            "integrity": "sha512-PNRviQdV72kaqGEu/HSzQ6zRwyQtC97e4klFzuLBZdawrhuVErO6nHvYjSdnkwIs+3Lv2xpR+giJI/JZBhh/wg==",
+            "version": "0.0.2-develop.15",
+            "resolved": "https://registry.npmjs.org/@lumeweb/kernel-peer-discovery-client/-/kernel-peer-discovery-client-0.0.2-develop.15.tgz",
+            "integrity": "sha512-zMKM8KLAJ7PkmKGyX10S5bHwac93Wdn1gfT4sPSstnAtqXlP7hNAoVKo9mSnvlhMyxMqElEv8reZ6SWrXqR87Q==",
             "dependencies": {
                 "@hyperswarm/dht-relay": "^0.3.0",
-                "@lumeweb/libkernel": "0.1.0-develop.38",
+                "@lumeweb/libkernel": "0.1.0-develop.39",
                 "@lumeweb/libpeerdiscovery": "^0.1.0-develop.2",
                 "hyperswarm": "^4.3.7"
             }
@@ -1827,29 +1827,6 @@
                 "sodium-universal": "^3.0.4",
                 "streamx": "^2.11.3",
                 "timeout-refresh": "^2.0.1"
-            }
-        },
-        "node_modules/@lumeweb/kernel-peer-discovery-client/node_modules/@lumeweb/libkernel": {
-            "version": "0.1.0-develop.38",
-            "resolved": "https://registry.npmjs.org/@lumeweb/libkernel/-/libkernel-0.1.0-develop.38.tgz",
-            "integrity": "sha512-kzaUoIY1tIqX8x0PQU/q7Jj+O7SCvZxCZsc5BtCKbYyUym8ws19DLW1WcI3penhRJBUnjGZ4nxnSybBNP1bjfg==",
-            "dependencies": {
-                "@lumeweb/libweb": "0.2.0-develop.38",
-                "emittery": "^1.0.1",
-                "p-defer": "^4.0.0"
-            }
-        },
-        "node_modules/@lumeweb/kernel-peer-discovery-client/node_modules/@lumeweb/libweb": {
-            "version": "0.2.0-develop.38",
-            "resolved": "https://registry.npmjs.org/@lumeweb/libweb/-/libweb-0.2.0-develop.38.tgz",
-            "integrity": "sha512-Tuhf7TIe40oYKBQHKGf05hl+GMvBtYfpsZu6CdQL60reNquTZhG34j7TpEFsjuZG4qdj0jb3ryJ7UgSLq57qFw==",
-            "dependencies": {
-                "@lumeweb/community-portals": "^0.1.0-develop.6",
-                "@lumeweb/libportal": "0.2.0-develop.20",
-                "@lumeweb/node-library-preset": "0.2.7",
-                "@noble/curves": "^1.1.0",
-                "@noble/hashes": "^1.3.1",
-                "binconv": "^0.2.0"
             }
         },
         "node_modules/@lumeweb/kernel-peer-discovery-client/node_modules/sodium-native": {
@@ -1894,41 +1871,6 @@
             "integrity": "sha512-eOdcFDPTPKBSulCuj5wlSvq/0ooQ4en7Iix1z3rH1YLSgyS+HDAfkYZGoqtB6AwH+rn0UFBvjHlB1Fds/TpEMQ==",
             "dependencies": {
                 "b4a": "^1.6.4"
-            }
-        },
-        "node_modules/@lumeweb/libportal": {
-            "version": "0.2.0-develop.20",
-            "resolved": "https://registry.npmjs.org/@lumeweb/libportal/-/libportal-0.2.0-develop.20.tgz",
-            "integrity": "sha512-9bjyih7fyXpkcOYSue/jcLufcXQckkp30Ptigg2qFIDJOnxiv3ymRr2aq7rvXspnmTxnaQgwND0nQ0W0YOCnGA==",
-            "dependencies": {
-                "@lumeweb/libs5": "^0.1.0-develop.43",
-                "@lumeweb/node-library-preset": "git+https://git.lumeweb.com/LumeWeb/node-library-preset.git",
-                "@noble/curves": "^1.1.0",
-                "@noble/hashes": "^1.3.1",
-                "detect-node": "^2.1.0",
-                "multiformats": "^11.0.2",
-                "node-fetch": "^3.3.1",
-                "p-defer": "^4.0.0",
-                "stream-to-blob": "^2.0.1",
-                "tus-js-client": "^3.1.0",
-                "web-streams-polyfill": "^3.2.1"
-            }
-        },
-        "node_modules/@lumeweb/libportal/node_modules/node-fetch": {
-            "version": "3.3.1",
-            "resolved": "https://registry.npmjs.org/node-fetch/-/node-fetch-3.3.1.tgz",
-            "integrity": "sha512-cRVc/kyto/7E5shrWca1Wsea4y6tL9iYJE5FBCius3JQfb/4P4I295PfhgbJQBLTx6lATE4z+wK0rPM4VS2uow==",
-            "dependencies": {
-                "data-uri-to-buffer": "^4.0.0",
-                "fetch-blob": "^3.1.4",
-                "formdata-polyfill": "^4.0.10"
-            },
-            "engines": {
-                "node": "^12.20.0 || ^14.13.1 || >=16.0.0"
-            },
-            "funding": {
-                "type": "opencollective",
-                "url": "https://opencollective.com/node-fetch"
             }
         },
         "node_modules/@lumeweb/libs5": {
