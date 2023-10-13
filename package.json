@@ -1,7 +1,7 @@
 {
     "name": "@lumeweb/hyperswarm-web",
     "type": "module",
-    "version": "0.0.2-develop.12",
+    "version": "0.0.2-develop.13",
     "main": "lib/index.js",
     "repository": {
         "type": "git",
